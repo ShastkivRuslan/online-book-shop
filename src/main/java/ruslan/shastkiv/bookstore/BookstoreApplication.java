@@ -20,16 +20,13 @@ public class BookstoreApplication {
 
     @Bean
     public CommandLineRunner commandLineRunner() {
-        return new CommandLineRunner() {
-            @Override
-            public void run(String... args) throws Exception {
-                Book modernJava = new Book();
-                modernJava.setTitle("Modern Java in action");
-                modernJava.setAuthor("Alan Mycroft");
-                modernJava.setPrice(BigDecimal.valueOf(999));
-                bookService.save(modernJava);
-                System.out.println(bookService.findAll());
-            }
+        return args -> {
+            Book modernJava = new Book();
+            modernJava.setTitle("Modern Java in action");
+            modernJava.setAuthor("Alan Mycroft");
+            modernJava.setPrice(BigDecimal.valueOf(999));
+            bookService.save(modernJava);
+            System.out.println(bookService.findAll());
         };
     }
 
