@@ -1,7 +1,6 @@
 package ruslan.shastkiv.bookstore.service.impl;
 
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ruslan.shastkiv.bookstore.model.Book;

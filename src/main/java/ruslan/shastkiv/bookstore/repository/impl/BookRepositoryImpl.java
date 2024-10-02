@@ -1,7 +1,6 @@
 package ruslan.shastkiv.bookstore.repository.impl;
 
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
