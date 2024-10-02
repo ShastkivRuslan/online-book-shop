@@ -21,13 +21,14 @@ public class BookstoreApplication {
     @Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {
-            Book modernJava = new Book();
-            modernJava.setTitle("Modern Java in action");
-            modernJava.setAuthor("Alan Mycroft");
-            modernJava.setPrice(BigDecimal.valueOf(999));
-            bookService.save(modernJava);
+            Book book = new Book();
+            book.setTitle("Modern Java in action");
+            book.setAuthor("Alan Mycroft");
+            book.setIsbn("9781638356974");
+            book.setPrice(BigDecimal.valueOf(999));
+
+            bookService.save(book);
             System.out.println(bookService.findAll());
         };
     }
-
 }
