@@ -1,6 +1,7 @@
 package ruslan.shastkiv.bookstore.repository.impl;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,7 +30,7 @@ public class BookRepositoryImpl implements BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new DataProcessingException("Can`t save book: " + book, e);
+            throw new DataProcessingException("Can`t save a book: " + book, e);
         } finally {
             if (session != null) {
                 session.close();
@@ -44,6 +45,14 @@ public class BookRepositoryImpl implements BookRepository {
                     .getResultList();
         } catch (Exception e) {
             throw new DataProcessingException("Can't get all books", e);
+        }
+    }
+
+    @Override
+    public Optional<Book> findBookById(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            Book book = session.find(Book.class, id);
+            return Optional.ofNullable(book);
         }
     }
 }
