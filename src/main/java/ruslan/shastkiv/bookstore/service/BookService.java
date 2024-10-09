@@ -1,10 +1,13 @@
 package ruslan.shastkiv.bookstore.service;
 
 import java.util.List;
-import ruslan.shastkiv.bookstore.model.Book;
+import ruslan.shastkiv.bookstore.dto.BookDto;
+import ruslan.shastkiv.bookstore.dto.CreateBookRequestDto;
 
 public interface BookService {
-    Book save(Book book);
+    BookDto createBook(CreateBookRequestDto requestDto);
 
-    List<Book> findAll();
+    List<BookDto> getAll();
+
+    BookDto getBookById(Long id);
 }
