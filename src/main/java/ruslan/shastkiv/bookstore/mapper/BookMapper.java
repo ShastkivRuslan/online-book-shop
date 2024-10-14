@@ -1,6 +1,7 @@
 package ruslan.shastkiv.bookstore.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import ruslan.shastkiv.bookstore.config.MapperConfig;
 import ruslan.shastkiv.bookstore.dto.BookDto;
 import ruslan.shastkiv.bookstore.dto.CreateBookRequestDto;
@@ -11,5 +12,8 @@ public interface BookMapper {
     BookDto toDto(Book employee);
 
     Book toModel(CreateBookRequestDto requestDto);
+
+    void updateBookFromDto(CreateBookRequestDto requestDto, @MappingTarget Book book);
 }
+
 

@@ -23,7 +23,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "is_deleted")
+    @Column(nullable = false)
     private boolean isDeleted = false;
 
     @Column(nullable = false)
@@ -40,6 +40,5 @@ public class Book {
 
     private String description;
 
-    @Column(name = "cover_image")
     private String coverImage;
 }
