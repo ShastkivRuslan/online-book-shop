@@ -1,8 +1,6 @@
 package ruslan.shastkiv.bookstore.repository.book.specification;
 
 import java.util.Arrays;
-
-import jakarta.persistence.Column;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import ruslan.shastkiv.bookstore.model.Book;

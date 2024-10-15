@@ -2,7 +2,6 @@ package ruslan.shastkiv.bookstore.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ruslan.shastkiv.bookstore.dto.BookDto;
 import ruslan.shastkiv.bookstore.dto.BookSearchParametersDto;

@@ -9,14 +9,15 @@ import ruslan.shastkiv.bookstore.repository.SpecificationProviderManager;
 
 @Component
 @RequiredArgsConstructor
-public class BookSpecificationProviderManager<Book> implements SpecificationProviderManager<Book> {
+public class BookSpecificationProviderManager implements SpecificationProviderManager<Book> {
     private final List<SpecificationProvider<Book>> bookSpecificationProviders;
 
     @Override
     public SpecificationProvider<Book> getSpecificationProvider(String key) {
-       return bookSpecificationProviders.stream()
+        return bookSpecificationProviders.stream()
                .filter(p -> p.getKey().equals(key))
                .findFirst()
-               .orElseThrow(() -> new RuntimeException("Can`t find correct specification by key: " + key));
+               .orElseThrow(()
+                       -> new RuntimeException("Can`t find correct specification by key: " + key));
     }
 }

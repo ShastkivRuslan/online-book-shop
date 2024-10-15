@@ -10,7 +10,9 @@ import ruslan.shastkiv.bookstore.repository.SpecificationProviderManager;
 
 @Component
 @RequiredArgsConstructor
-public class BookSpecificationBuilder implements SpecificationBuilder<Book, BookSearchParametersDto> {
+public class BookSpecificationBuilder implements
+        SpecificationBuilder<Book,
+        BookSearchParametersDto> {
     private static final String AUTHOR_KEY = "author";
     private static final String TITLE_KEY = "title";
     private static final String PRICE_KEY = "price";
@@ -33,7 +35,7 @@ public class BookSpecificationBuilder implements SpecificationBuilder<Book, Book
                     .getSpecification(searchParameters.titles())
             );
         }
-        if (searchParameters.prices()!= null && searchParameters.prices().length > 0) {
+        if (searchParameters.prices() != null && searchParameters.prices().length > 0) {
             specification = specification.and(bookSpecificationProviderManager
                     .getSpecificationProvider(PRICE_KEY)
                     .getSpecification(searchParameters.prices())
