@@ -8,15 +8,16 @@ import ruslan.shastkiv.bookstore.repository.SpecificationProvider;
 
 @Component
 public class AuthorSpecificationProvider implements SpecificationProvider<Book> {
-    private static final String KEY = "author";
+    private static final String AUTHOR_COLUMN = "author";
 
     @Override
     public String getKey() {
-        return KEY;
+        return AUTHOR_COLUMN;
     }
 
     @Override
     public Specification<Book> getSpecification(String[] params) {
-        return (root, query, criteriaBuilder) -> root.get(KEY).in(Arrays.stream(params).toArray());
+        return (root, query, criteriaBuilder)
+                -> root.get(AUTHOR_COLUMN).in(Arrays.stream(params).toArray());
     }
 }

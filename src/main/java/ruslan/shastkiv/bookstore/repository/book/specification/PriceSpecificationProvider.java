@@ -8,7 +8,7 @@ import ruslan.shastkiv.bookstore.repository.SpecificationProvider;
 
 @Component
 public class PriceSpecificationProvider implements SpecificationProvider<Book> {
-    private static final String KEY = "price";
+    private static final String PRICE_COLUMN = "price";
 
     private static final int MIN_PRICE = 0;
     private static final int MAX_PRICE = 1;
@@ -18,17 +18,17 @@ public class PriceSpecificationProvider implements SpecificationProvider<Book> {
 
     @Override
     public String getKey() {
-        return KEY;
+        return PRICE_COLUMN;
     }
 
     @Override
     public Specification<Book> getSpecification(String[] params) {
         return (root, query, criteriaBuilder) -> {
             if (params.length == ONLY_MIN_PRICE) {
-                return criteriaBuilder.greaterThanOrEqualTo(root.get(KEY),
+                return criteriaBuilder.greaterThanOrEqualTo(root.get(PRICE_COLUMN),
                         new BigDecimal(params[MIN_PRICE]));
             } else if (params.length == MIN_AND_MAX_PRICE) {
-                return criteriaBuilder.between(root.get(KEY),
+                return criteriaBuilder.between(root.get(PRICE_COLUMN),
                         new BigDecimal(params[MIN_PRICE]),
                         new BigDecimal(params[MAX_PRICE]));
             } else {
