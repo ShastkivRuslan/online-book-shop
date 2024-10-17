@@ -1,8 +1,6 @@
 package ruslan.shastkiv.bookstore.service;
 
 import java.util.List;
-
-import org.hibernate.query.Page;
 import org.springframework.data.domain.Pageable;
 import ruslan.shastkiv.bookstore.dto.BookDto;
 import ruslan.shastkiv.bookstore.dto.BookSearchParametersDto;
