@@ -2,6 +2,7 @@ package ruslan.shastkiv.bookstore.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ruslan.shastkiv.bookstore.dto.BookDto;
 import ruslan.shastkiv.bookstore.dto.BookSearchParametersDto;
@@ -27,8 +28,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> getAll() {
-        return bookRepository.findAll().stream()
+    public List<BookDto> getAll(Pageable pageable) {
+        return bookRepository.findAll(pageable).stream()
                 .map(bookMapper::toDto)
                 .toList();
     }
@@ -52,8 +53,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> search(BookSearchParametersDto searchParametersDto) {
-        return bookRepository.findAll(bookSpecificationBuilder.build(searchParametersDto))
+    public List<BookDto> search(BookSearchParametersDto searchParametersDto, Pageable pageable) {
+        return bookRepository.findAll(bookSpecificationBuilder.build(searchParametersDto), pageable)
                 .stream()
                 .map(bookMapper::toDto)
                 .toList();
