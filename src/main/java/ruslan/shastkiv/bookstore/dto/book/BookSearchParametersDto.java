@@ -1,4 +1,4 @@
-package ruslan.shastkiv.bookstore.dto;
+package ruslan.shastkiv.bookstore.dto.book;
 
 public record BookSearchParametersDto(
         String[] authors,

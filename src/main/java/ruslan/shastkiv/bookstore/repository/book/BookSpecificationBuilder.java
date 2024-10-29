@@ -3,7 +3,7 @@ package ruslan.shastkiv.bookstore.repository.book;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import ruslan.shastkiv.bookstore.dto.BookSearchParametersDto;
+import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
 import ruslan.shastkiv.bookstore.model.Book;
 import ruslan.shastkiv.bookstore.repository.SpecificationBuilder;
 import ruslan.shastkiv.bookstore.repository.SpecificationProviderManager;

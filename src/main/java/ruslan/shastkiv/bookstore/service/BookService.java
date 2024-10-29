@@ -2,9 +2,9 @@ package ruslan.shastkiv.bookstore.service;
 
 import java.util.List;
 import org.springframework.data.domain.Pageable;
-import ruslan.shastkiv.bookstore.dto.BookDto;
-import ruslan.shastkiv.bookstore.dto.BookSearchParametersDto;
-import ruslan.shastkiv.bookstore.dto.CreateBookRequestDto;
+import ruslan.shastkiv.bookstore.dto.book.BookDto;
+import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
+import ruslan.shastkiv.bookstore.dto.book.CreateBookRequestDto;
 
 public interface BookService {
     BookDto createBook(CreateBookRequestDto requestDto);
