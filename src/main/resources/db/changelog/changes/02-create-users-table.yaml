@@ -21,7 +21,7 @@ databaseChangeLog:
                     unique: true
               - column:
                   name: password
-                  type: varchar(30)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -35,5 +35,5 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: shopping_address
+                  name: shipping_address
                   type: varchar(255)
