@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ruslan.shastkiv.bookstore.dto.book.BookDto;
 import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
 import ruslan.shastkiv.bookstore.dto.book.CreateBookRequestDto;
-import ruslan.shastkiv.bookstore.service.BookService;
+import ruslan.shastkiv.bookstore.service.book.BookService;
 
 @Tag(name = "Books", description = "Manage books in the bookstore")
 @RequiredArgsConstructor

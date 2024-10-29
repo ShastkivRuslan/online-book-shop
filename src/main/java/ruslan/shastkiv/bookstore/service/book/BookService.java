@@ -1,4 +1,4 @@
-package ruslan.shastkiv.bookstore.service;
+package ruslan.shastkiv.bookstore.service.book;
 
 import java.util.List;
 import org.springframework.data.domain.Pageable;

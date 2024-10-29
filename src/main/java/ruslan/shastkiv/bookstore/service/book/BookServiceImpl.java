@@ -1,4 +1,4 @@
-package ruslan.shastkiv.bookstore.service.impl;
+package ruslan.shastkiv.bookstore.service.book;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import ruslan.shastkiv.bookstore.mapper.BookMapper;
 import ruslan.shastkiv.bookstore.model.Book;
 import ruslan.shastkiv.bookstore.repository.book.BookRepository;
 import ruslan.shastkiv.bookstore.repository.book.BookSpecificationBuilder;
-import ruslan.shastkiv.bookstore.service.BookService;
 
 @Service
 @RequiredArgsConstructor
