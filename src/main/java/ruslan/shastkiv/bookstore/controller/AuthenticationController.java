@@ -1,5 +1,6 @@
 package ruslan.shastkiv.bookstore.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,7 @@ public class AuthenticationController {
     private final UserService userService;
 
     @PostMapping("/registration")
-    public UserDto register(@RequestBody UserRegistrationRequestDto registrationRequestDto)
+    public UserDto register(@RequestBody @Valid UserRegistrationRequestDto registrationRequestDto)
             throws RegistrationException {
         return userService.register(registrationRequestDto);
     }
