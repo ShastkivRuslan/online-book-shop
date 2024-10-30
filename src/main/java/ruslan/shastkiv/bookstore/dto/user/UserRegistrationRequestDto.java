@@ -3,7 +3,7 @@ package ruslan.shastkiv.bookstore.dto.user;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
-import ruslan.shastkiv.bookstore.validation.isbn.PasswordMatcher;
+import ruslan.shastkiv.bookstore.validation.password_matcher.PasswordMatcher;
 
 @PasswordMatcher
 public record UserRegistrationRequestDto(@NotBlank

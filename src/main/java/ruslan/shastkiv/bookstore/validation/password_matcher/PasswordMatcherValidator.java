@@ -3,7 +3,6 @@ package ruslan.shastkiv.bookstore.validation.password_matcher;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import ruslan.shastkiv.bookstore.dto.user.UserRegistrationRequestDto;
-import ruslan.shastkiv.bookstore.validation.isbn.PasswordMatcher;
 
 public class PasswordMatcherValidator
         implements ConstraintValidator<PasswordMatcher, UserRegistrationRequestDto> {

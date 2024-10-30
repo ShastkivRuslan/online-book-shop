@@ -1,8 +1,7 @@
-package ruslan.shastkiv.bookstore.validation.isbn;
+package ruslan.shastkiv.bookstore.validation.password_matcher;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import ruslan.shastkiv.bookstore.validation.password_matcher.PasswordMatcherValidator;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
