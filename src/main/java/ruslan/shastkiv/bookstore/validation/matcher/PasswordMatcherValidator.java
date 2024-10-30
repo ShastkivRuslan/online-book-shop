@@ -12,13 +12,13 @@ public class PasswordMatcherValidator
     @Override
     public boolean isValid(UserRegistrationRequestDto registrationRequestDto,
                            ConstraintValidatorContext constraintValidatorContext) {
-        if (!registrationRequestDto.password().equals(registrationRequestDto.repeatPassword())) {
+        boolean isValid = registrationRequestDto.password().equals(registrationRequestDto.repeatPassword());
+        if (!isValid) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(ERROR_MESSAGE)
                     .addPropertyNode(FIELD_NAME)
                     .addConstraintViolation();
-            return false;
         }
-        return true;
+        return isValid;
     }
 }
