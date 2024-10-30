@@ -1,4 +1,4 @@
-package ruslan.shastkiv.bookstore.validation.password_matcher;
+package ruslan.shastkiv.bookstore.validation.matcher;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
