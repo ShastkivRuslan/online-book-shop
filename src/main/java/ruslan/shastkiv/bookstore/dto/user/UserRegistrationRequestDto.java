@@ -8,6 +8,7 @@ import ruslan.shastkiv.bookstore.validation.matcher.PasswordMatcher;
 @PasswordMatcher
 public record UserRegistrationRequestDto(@NotBlank
                                          @Email
+                                         @Length(max = 50)
                                          String email,
                                          @NotBlank
                                          @Length(min = 8, max = 30)
@@ -16,8 +17,10 @@ public record UserRegistrationRequestDto(@NotBlank
                                          @Length(min = 8, max = 30)
                                          String repeatPassword,
                                          @NotBlank
+                                         @Length(max = 30)
                                          String firstName,
                                          @NotBlank
+                                         @Length(max = 30)
                                          String lastName,
                                          String shippingAddress) {
 }
