@@ -1,6 +1,7 @@
 package ruslan.shastkiv.bookstore.service.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ruslan.shastkiv.bookstore.dto.user.UserDto;
 import ruslan.shastkiv.bookstore.dto.user.UserRegistrationRequestDto;
@@ -14,6 +15,7 @@ import ruslan.shastkiv.bookstore.repository.user.UserRepository;
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDto register(UserRegistrationRequestDto registrationRequestDto) {
@@ -22,7 +24,9 @@ public class UserServiceImpl implements UserService {
                     + registrationRequestDto.email() + "] already registered!"
             );
         }
-        User savedUser = userRepository.save(userMapper.toModel(registrationRequestDto));
+        User userFromRequest = userMapper.toModel(registrationRequestDto);
+        userFromRequest.setPassword(passwordEncoder.encode(registrationRequestDto.password()));
+        User savedUser = userRepository.save(userFromRequest);
         return userMapper.toDto(savedUser);
     }
 }
