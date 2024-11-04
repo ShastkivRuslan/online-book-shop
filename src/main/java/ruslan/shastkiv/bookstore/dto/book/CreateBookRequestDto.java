@@ -1,4 +1,4 @@
-package ruslan.shastkiv.bookstore.dto;
+package ruslan.shastkiv.bookstore.dto.book;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

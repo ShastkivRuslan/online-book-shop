@@ -1,18 +1,17 @@
-package ruslan.shastkiv.bookstore.service.impl;
+package ruslan.shastkiv.bookstore.service.book;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ruslan.shastkiv.bookstore.dto.BookDto;
-import ruslan.shastkiv.bookstore.dto.BookSearchParametersDto;
-import ruslan.shastkiv.bookstore.dto.CreateBookRequestDto;
+import ruslan.shastkiv.bookstore.dto.book.BookDto;
+import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
+import ruslan.shastkiv.bookstore.dto.book.CreateBookRequestDto;
 import ruslan.shastkiv.bookstore.exception.EntityNotFoundException;
 import ruslan.shastkiv.bookstore.mapper.BookMapper;
 import ruslan.shastkiv.bookstore.model.Book;
 import ruslan.shastkiv.bookstore.repository.book.BookRepository;
 import ruslan.shastkiv.bookstore.repository.book.BookSpecificationBuilder;
-import ruslan.shastkiv.bookstore.service.BookService;
 
 @Service
 @RequiredArgsConstructor

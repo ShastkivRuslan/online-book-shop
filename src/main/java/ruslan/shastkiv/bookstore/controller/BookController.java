@@ -2,6 +2,7 @@ package ruslan.shastkiv.bookstore.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ruslan.shastkiv.bookstore.dto.BookDto;
-import ruslan.shastkiv.bookstore.dto.BookSearchParametersDto;
-import ruslan.shastkiv.bookstore.dto.CreateBookRequestDto;
-import ruslan.shastkiv.bookstore.service.BookService;
+import ruslan.shastkiv.bookstore.dto.book.BookDto;
+import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
+import ruslan.shastkiv.bookstore.dto.book.CreateBookRequestDto;
+import ruslan.shastkiv.bookstore.service.book.BookService;
 
 @Tag(name = "Books", description = "Manage books in the bookstore")
 @RequiredArgsConstructor
@@ -52,7 +53,7 @@ public class BookController {
                     + "The request body must include title, author, ISBN, and price."
     )
     @PostMapping
-    public BookDto createBook(@RequestBody CreateBookRequestDto bookDto) {
+    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.createBook(bookDto);
     }
 
