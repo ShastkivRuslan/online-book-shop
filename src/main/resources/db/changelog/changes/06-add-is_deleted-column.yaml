@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: is_deleted
-                  type: bigint(1)
+                  type: tinyint(1)
                   defaultValueBoolean: false
                   constraints:
                     nullable: false
