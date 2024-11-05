@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class BookController {
             summary = "Get all books",
             description = "Retrieve a list of all books. Supports pagination."
     )
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     public List<BookDto> getAll(Pageable pageable) {
         return bookService.getAll(pageable);
@@ -42,9 +44,24 @@ public class BookController {
             description = "Retrieve a specific book by its ID. "
                     + "Returns 404 if the book is not found."
     )
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
     public BookDto getBokById(@PathVariable Long id) {
         return bookService.getBookById(id);
+    }
+
+    @Operation(
+            summary = "Search for books",
+            description = "Search for books by author, title, or price range. "
+                    + "If only one price is provided, it will be treated as the minimum price, "
+                    + "and results will be returned starting from that price. "
+                    + "If two prices are provided, they will be treated as "
+                    + "the minimum and maximum price range."
+    )
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/search")
+    public List<BookDto> search(BookSearchParametersDto searchParametersDto, Pageable pageable) {
+        return bookService.search(searchParametersDto, pageable);
     }
 
     @Operation(
@@ -52,7 +69,9 @@ public class BookController {
             description = "Add a new book to the bookstore. "
                     + "The request body must include title, author, ISBN, and price."
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.createBook(bookDto);
     }
@@ -62,6 +81,7 @@ public class BookController {
             description = "Update an existing book. "
                     + "Requires the book ID and the updated details in the request body."
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public BookDto updateBook(@PathVariable Long id, @RequestBody CreateBookRequestDto requestDto) {
         return bookService.updateBook(id, requestDto);
@@ -72,22 +92,10 @@ public class BookController {
             description = "Remove a book from the bookstore by its ID. "
                     + "Returns 404 if the book is not found."
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
-    }
-
-    @Operation(
-            summary = "Search for books",
-            description = "Search for books by author, title, or price range. "
-                    + "If only one price is provided, it will be treated as the minimum price, "
-                    + "and results will be returned starting from that price. "
-                    + "If two prices are provided, they will be treated as "
-                    + "the minimum and maximum price range.")
-
-    @GetMapping("/search")
-    public List<BookDto> search(BookSearchParametersDto searchParametersDto, Pageable pageable) {
-        return bookService.search(searchParametersDto, pageable);
     }
 }
