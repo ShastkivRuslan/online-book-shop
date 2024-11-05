@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,7 +37,7 @@ public class BookController {
     )
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    public List<BookDto> getAll(Pageable pageable) {
+    public List<BookDto> getAll(@ParameterObject @PageableDefault Pageable pageable) {
         return bookService.getAll(pageable);
     }
 
@@ -60,7 +62,8 @@ public class BookController {
     )
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/search")
-    public List<BookDto> search(BookSearchParametersDto searchParametersDto, Pageable pageable) {
+    public List<BookDto> search(BookSearchParametersDto searchParametersDto,
+                                @ParameterObject @PageableDefault Pageable pageable) {
         return bookService.search(searchParametersDto, pageable);
     }
 
@@ -83,7 +86,8 @@ public class BookController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public BookDto updateBook(@PathVariable Long id, @RequestBody CreateBookRequestDto requestDto) {
+    public BookDto updateBook(
+            @PathVariable Long id, @RequestBody @Valid CreateBookRequestDto requestDto) {
         return bookService.updateBook(id, requestDto);
     }
 
