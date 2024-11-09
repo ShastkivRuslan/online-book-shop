@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class BookController {
     )
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    public List<BookDto> getAll(@ParameterObject @PageableDefault Pageable pageable) {
+    public Page<BookDto> getAll(@ParameterObject @PageableDefault Pageable pageable) {
         return bookService.getAll(pageable);
     }
 
@@ -62,7 +63,7 @@ public class BookController {
     )
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/search")
-    public List<BookDto> search(BookSearchParametersDto searchParametersDto,
+    public Page<BookDto> search(BookSearchParametersDto searchParametersDto,
                                 @ParameterObject @PageableDefault Pageable pageable) {
         return bookService.search(searchParametersDto, pageable);
     }
