@@ -57,8 +57,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Map<String, String>> handleBadCredentialsException(
-            BadCredentialsException exception) {
+    public ResponseEntity<Map<String, String>> handleBadCredentialsException() {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", "User password incorrect");
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
