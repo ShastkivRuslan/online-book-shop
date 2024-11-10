@@ -1,6 +1,5 @@
 package ruslan.shastkiv.bookstore.service.book;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

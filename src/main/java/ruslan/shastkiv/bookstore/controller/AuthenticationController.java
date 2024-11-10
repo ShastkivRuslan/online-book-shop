@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ruslan.shastkiv.bookstore.dto.user.UserDto;
+import ruslan.shastkiv.bookstore.dto.user.UserLoginRequestDto;
+import ruslan.shastkiv.bookstore.dto.user.UserLoginResponseDto;
 import ruslan.shastkiv.bookstore.dto.user.UserRegistrationRequestDto;
 import ruslan.shastkiv.bookstore.exception.RegistrationException;
+import ruslan.shastkiv.bookstore.security.AuthenticationService;
 import ruslan.shastkiv.bookstore.service.user.UserService;
 
 @Tag(name = "Authentication",
@@ -20,6 +23,7 @@ import ruslan.shastkiv.bookstore.service.user.UserService;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @Operation(summary = "Register a new user",
             description = "Registers a new user with provided credentials. "
@@ -28,5 +32,10 @@ public class AuthenticationController {
     public UserDto register(@RequestBody @Valid UserRegistrationRequestDto registrationRequestDto)
             throws RegistrationException {
         return userService.register(registrationRequestDto);
+    }
+
+    @PostMapping("/login")
+    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto) {
+        return authenticationService.authenticate(requestDto);
     }
 }
