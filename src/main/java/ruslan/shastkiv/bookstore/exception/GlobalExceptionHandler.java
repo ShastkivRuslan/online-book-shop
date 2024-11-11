@@ -1,6 +1,5 @@
 package ruslan.shastkiv.bookstore.exception;
 
-import io.jsonwebtoken.JwtException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -60,13 +59,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleBadCredentialsException() {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", "User password incorrect");
-        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(JwtException.class)
-    public ResponseEntity<Map<String, String>> handleJwtException(JwtException exception) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 }
