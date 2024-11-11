@@ -1,6 +1,6 @@
 package ruslan.shastkiv.bookstore.service.book;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ruslan.shastkiv.bookstore.dto.book.BookDto;
 import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
@@ -9,7 +9,7 @@ import ruslan.shastkiv.bookstore.dto.book.CreateBookRequestDto;
 public interface BookService {
     BookDto createBook(CreateBookRequestDto requestDto);
 
-    List<BookDto> getAll(Pageable pageable);
+    Page<BookDto> getAll(Pageable pageable);
 
     BookDto getBookById(Long id);
 
@@ -17,6 +17,6 @@ public interface BookService {
 
     void deleteBook(Long id);
 
-    List<BookDto> search(BookSearchParametersDto searchParametersDto, Pageable pageable);
+    Page<BookDto> search(BookSearchParametersDto searchParametersDto, Pageable pageable);
 
 }
