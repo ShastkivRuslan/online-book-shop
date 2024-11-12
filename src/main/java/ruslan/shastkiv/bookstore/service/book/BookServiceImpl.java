@@ -1,5 +1,6 @@
 package ruslan.shastkiv.bookstore.service.book;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -76,10 +77,14 @@ public class BookServiceImpl implements BookService {
     }
 
     private Set<Category> initCategories(List<Long> categoryIds) {
-        return categoryIds.stream()
-                .map(id -> categoryRepository.findById(id).orElseThrow(()
-                        -> new EntityNotFoundException("Cant find category by id: " + id)))
-                .collect(Collectors.toSet());
+        List<Category> categoriesByIds = categoryRepository.findAllById(categoryIds);
+        Set<Long> checkList = categoriesByIds.stream().map(Category::getId).collect(Collectors.toSet());
+        for (Long id : categoryIds) {
+            if (!checkList.contains(id)) {
+                throw new EntityNotFoundException("Can`t find category by id: " + id);
+            }
+        }
+        return new HashSet<>(categoriesByIds);
     }
 
 }

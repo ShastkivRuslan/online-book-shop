@@ -58,6 +58,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}/books")
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Get all books by category ID",
             description = "This endpoint allows users to fetch a list of books "
                     + "for a specific category.")

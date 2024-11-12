@@ -22,4 +22,3 @@ public interface BookService {
 
     Page<BookDtoWithoutCategoryIds> getAllBooksByCategoryId(Long id, Pageable pageable);
 }
-

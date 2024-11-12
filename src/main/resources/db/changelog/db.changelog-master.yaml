@@ -23,4 +23,3 @@ databaseChangeLog:
       file: db/changelog/changes/11-insert-books.yaml
   - include:
       file: db/changelog/changes/12-insert-books_categories.yaml
-
