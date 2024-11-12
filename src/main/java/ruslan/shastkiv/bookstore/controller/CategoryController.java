@@ -1,5 +1,7 @@
 package ruslan.shastkiv.bookstore.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,35 +25,46 @@ import ruslan.shastkiv.bookstore.service.category.CategoryService;
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
+@Tag(name = "Category", description = "Operations related to categories")
 public class CategoryController {
     private final CategoryService categoryService;
     private final BookService bookService;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Add a new category",
+            description = "This endpoint allows an admin to add a new category.")
     public CategoryDto addCategory(@RequestBody @Valid CategoryRequestDto requestDto) {
         return categoryService.addCategory(requestDto);
     }
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Get all categories",
+            description = "This endpoint allows users to fetch a list of all categories.")
     public List<CategoryDto> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Get category by ID",
+            description = "This endpoint allows users to fetch a category by its ID.")
     public CategoryDto getCategoryById(@PathVariable Long id) {
         return categoryService.getCategoryById(id);
     }
 
     @GetMapping("/{id}/books")
+    @Operation(summary = "Get all books by category ID",
+            description = "This endpoint allows users to fetch a list of books for a specific category.")
     public List<BookDto> getAllBooksByCategoryId(@PathVariable Long id) {
         return bookService.getAllBooksByCategoryId(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Update category by ID",
+            description = "This endpoint allows an admin to update an existing category by its ID.")
     public CategoryDto updateCategoryById(
             @PathVariable Long id, @RequestBody @Valid CategoryRequestDto requestDto) {
         return categoryService.updateCategory(id, requestDto);
@@ -60,6 +73,8 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete category by ID",
+            description = "This endpoint allows an admin to delete a category by its ID.")
     public void deleteCategoryById(@PathVariable Long id) {
         categoryService.deleteCategory(id);
     }
