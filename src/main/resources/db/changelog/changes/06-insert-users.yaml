@@ -1,254 +1,185 @@
 databaseChangeLog:
   - changeSet:
-      id: insert-books
+      id: insert-users
       author: shastkiv
       changes:
         - insert:
-            tableName: books
+            tableName: users
             columns:
               - column:
-                  name: is_deleted
-                  value: "0"
+                  name: email
+                  value: "john.doe@example.com"
               - column:
-                  name: title
-                  value: "The Great Gatsby"
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
               - column:
-                  name: author
-                  value: "F. Scott Fitzgerald"
+                  name: first_name
+                  value: "John"
               - column:
-                  name: isbn
-                  value: "9780743273565"
+                  name: last_name
+                  value: "Doe"
               - column:
-                  name: price
-                  valueNumeric: 10.99
-              - column:
-                  name: description
-                  value: "A classic novel of the Roaring Twenties."
-              - column:
-                  name: cover_image
-                  value: "gatsby.jpg"
-
+                  name: shipping_address
+                  value: "123 Main St, City, Country"
         - insert:
-            tableName: books
+            tableName: users
             columns:
               - column:
-                  name: is_deleted
-                  value: "0"
+                  name: email
+                  value: "jane.smith@example.com"
               - column:
-                  name: title
-                  value: "To Kill a Mockingbird"
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
               - column:
-                  name: author
-                  value: "Harper Lee"
+                  name: first_name
+                  value: "Jane"
               - column:
-                  name: isbn
-                  value: "9780061120084"
+                  name: last_name
+                  value: "Smith"
               - column:
-                  name: price
-                  value: 8.99
-              - column:
-                  name: description
-                  value: "A novel about racial injustice in the Deep South."
-              - column:
-                  name: cover_image
-                  value: "mockingbird.jpg"
-
+                  name: shipping_address
+                  value: "456 Elm St, City, Country"
         - insert:
-            tableName: books
+            tableName: users
             columns:
               - column:
-                  name: is_deleted
-                  value: "0"
+                  name: email
+                  value: "alice.johnson@example.com"
               - column:
-                  name: title
-                  value: "1984"
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
               - column:
-                  name: author
-                  value: "George Orwell"
+                  name: first_name
+                  value: "Alice"
               - column:
-                  name: isbn
-                  value: "9780451524935"
+                  name: last_name
+                  value: "Johnson"
               - column:
-                  name: price
-                  value: 9.99
-              - column:
-                  name: description
-                  value: "A dystopian novel about a totalitarian regime."
-              - column:
-                  name: cover_image
-                  value: "1984.jpg"
-
+                  name: shipping_address
+                  value: "789 Pine St, City, Country"
         - insert:
-            tableName: books
+            tableName: users
             columns:
               - column:
-                  name: is_deleted
-                  value: "0"
+                  name: email
+                  value: "bob.brown@example.com"
               - column:
-                  name: title
-                  value: "Pride and Prejudice"
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
               - column:
-                  name: author
-                  value: "Jane Austen"
+                  name: first_name
+                  value: "Bob"
               - column:
-                  name: isbn
-                  value: "9780141439518"
+                  name: last_name
+                  value: "Brown"
               - column:
-                  name: price
-                  value: 7.99
-              - column:
-                  name: description
-                  value: "A classic novel about manners and marriage."
-              - column:
-                  name: cover_image
-                  value: "pride.jpg"
-
+                  name: shipping_address
+                  value: "321 Oak St, City, Country"
         - insert:
-            tableName: books
+            tableName: users
             columns:
               - column:
-                  name: is_deleted
-                  value: "0"
+                  name: email
+                  value: "charlie.davis@example.com"
               - column:
-                  name: title
-                  value: "The Catcher in the Rye"
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
               - column:
-                  name: author
-                  value: "J.D. Salinger"
+                  name: first_name
+                  value: "Charlie"
               - column:
-                  name: isbn
-                  value: "9780316769488"
+                  name: last_name
+                  value: "Davis"
               - column:
-                  name: price
-                  value: 6.99
-              - column:
-                  name: description
-                  value: "A story about teenage rebellion and angst."
-              - column:
-                  name: cover_image
-                  value: "catcher.jpg"
-
+                  name: shipping_address
+                  value: "654 Maple St, City, Country"
         - insert:
-            tableName: books
+            tableName: users
             columns:
               - column:
-                  name: is_deleted
-                  value: "0"
+                  name: email
+                  value: "diana.wilson@example.com"
               - column:
-                  name: title
-                  value: "Moby-Dick"
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
               - column:
-                  name: author
-                  value: "Herman Melville"
+                  name: first_name
+                  value: "Diana"
               - column:
-                  name: isbn
-                  value: "9781503280786"
+                  name: last_name
+                  value: "Wilson"
               - column:
-                  name: price
-                  value: 11.99
-              - column:
-                  name: description
-                  value: "An epic tale of adventure and obsession."
-              - column:
-                  name: cover_image
-                  value: "moby_dick.jpg"
-
+                  name: shipping_address
+                  value: "987 Cedar St, City, Country"
         - insert:
-            tableName: books
+            tableName: users
             columns:
               - column:
-                  name: is_deleted
-                  value: "0"
+                  name: email
+                  value: "evan.thompson@example.com"
               - column:
-                  name: title
-                  value: "The Hobbit"
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
               - column:
-                  name: author
-                  value: "J.R.R. Tolkien"
+                  name: first_name
+                  value: "Evan"
               - column:
-                  name: isbn
-                  value: "9780547928227"
+                  name: last_name
+                  value: "Thompson"
               - column:
-                  name: price
-                  value: 12.99
-              - column:
-                  name: description
-                  value: "A fantasy adventure in Middle-earth."
-              - column:
-                  name: cover_image
-                  value: "hobbit.jpg"
-
+                  name: shipping_address
+                  value: "135 Birch St, City, Country"
         - insert:
-            tableName: books
+            tableName: users
             columns:
               - column:
-                  name: is_deleted
-                  value: "0"
+                  name: email
+                  value: "frank.miller@example.com"
               - column:
-                  name: title
-                  value: "War and Peace"
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
               - column:
-                  name: author
-                  value: "Leo Tolstoy"
+                  name: first_name
+                  value: "Frank"
               - column:
-                  name: isbn
-                  value: "9780199232765"
+                  name: last_name
+                  value: "Miller"
               - column:
-                  name: price
-                  value: 14.99
-              - column:
-                  name: description
-                  value: "A novel about Russian society during the Napoleonic era."
-              - column:
-                  name: cover_image
-                  value: "war_peace.jpg"
-
+                  name: shipping_address
+                  value: "246 Spruce St, City, Country"
         - insert:
-            tableName: books
+            tableName: users
             columns:
               - column:
-                  name: is_deleted
-                  value: "0"
+                  name: email
+                  value: "grace.jones@example.com"
               - column:
-                  name: title
-                  value: "The Odyssey"
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
               - column:
-                  name: author
-                  value: "Homer"
+                  name: first_name
+                  value: "Grace"
               - column:
-                  name: isbn
-                  value: "9780140268867"
+                  name: last_name
+                  value: "Jones"
               - column:
-                  name: price
-                  value: 10.50
-              - column:
-                  name: description
-                  value: "An epic poem about the adventures of Odysseus."
-              - column:
-                  name: cover_image
-                  value: "odyssey.jpg"
-
+                  name: shipping_address
+                  value: "357 Willow St, City, Country"
         - insert:
-            tableName: books
+            tableName: users
             columns:
               - column:
-                  name: is_deleted
-                  value: "0"
+                  name: email
+                  value: "harry.white@example.com"
               - column:
-                  name: title
-                  value: "Crime and Punishment"
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
               - column:
-                  name: author
-                  value: "Fyodor Dostoevsky"
+                  name: first_name
+                  value: "Harry"
               - column:
-                  name: isbn
-                  value: "9780140449136"
+                  name: last_name
+                  value: "White"
               - column:
-                  name: price
-                  value: 9.50
-              - column:
-                  name: description
-                  value: "A novel about guilt and redemption."
-              - column:
-                  name: cover_image
-                  value: "crime.jpg"
+                  name: shipping_address
+                  value: "468 Fir St, City, Country"
