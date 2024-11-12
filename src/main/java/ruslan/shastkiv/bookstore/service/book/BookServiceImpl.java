@@ -13,6 +13,8 @@ import ruslan.shastkiv.bookstore.model.Book;
 import ruslan.shastkiv.bookstore.repository.book.BookRepository;
 import ruslan.shastkiv.bookstore.repository.book.BookSpecificationBuilder;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -54,6 +56,11 @@ public class BookServiceImpl implements BookService {
     public Page<BookDto> search(BookSearchParametersDto searchParametersDto, Pageable pageable) {
         return bookRepository.findAll(bookSpecificationBuilder.build(searchParametersDto), pageable)
                 .map(bookMapper::toDto);
+    }
+
+    @Override
+    public List<BookDto> getAllBooksByCategoryId(Long id) {
+        return bookRepository.findBooksByCategoryId(id).stream().map(bookMapper::toDto).toList();
     }
 
     private Book findBookById(Long id) {

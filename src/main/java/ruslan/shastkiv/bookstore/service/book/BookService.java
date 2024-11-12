@@ -6,6 +6,8 @@ import ruslan.shastkiv.bookstore.dto.book.BookDto;
 import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
 import ruslan.shastkiv.bookstore.dto.book.CreateBookRequestDto;
 
+import java.util.List;
+
 public interface BookService {
     BookDto createBook(CreateBookRequestDto requestDto);
 
@@ -19,4 +21,6 @@ public interface BookService {
 
     Page<BookDto> search(BookSearchParametersDto searchParametersDto, Pageable pageable);
 
+    List<BookDto> getAllBooksByCategoryId(Long id);
 }
+
