@@ -3,8 +3,11 @@ package ruslan.shastkiv.bookstore.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ruslan.shastkiv.bookstore.dto.book.BookDto;
+import ruslan.shastkiv.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import ruslan.shastkiv.bookstore.dto.category.CategoryDto;
 import ruslan.shastkiv.bookstore.dto.category.CategoryRequestDto;
 import ruslan.shastkiv.bookstore.service.book.BookService;
@@ -42,8 +45,8 @@ public class CategoryController {
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Get all categories",
             description = "This endpoint allows users to fetch a list of all categories.")
-    public List<CategoryDto> getAllCategories() {
-        return categoryService.getAllCategories();
+    public Page<CategoryDto> getAllCategories(@ParameterObject @PageableDefault Pageable pageable) {
+        return categoryService.getAllCategories(pageable);
     }
 
     @GetMapping("/{id}")
@@ -56,9 +59,12 @@ public class CategoryController {
 
     @GetMapping("/{id}/books")
     @Operation(summary = "Get all books by category ID",
-            description = "This endpoint allows users to fetch a list of books for a specific category.")
-    public List<BookDto> getAllBooksByCategoryId(@PathVariable Long id) {
-        return bookService.getAllBooksByCategoryId(id);
+            description = "This endpoint allows users to fetch a list of books "
+                    + "for a specific category.")
+    public Page<BookDtoWithoutCategoryIds> getAllBooksByCategoryId(
+            @PathVariable Long id,
+            @ParameterObject @PageableDefault Pageable pageable) {
+        return bookService.getAllBooksByCategoryId(id, pageable);
     }
 
     @PutMapping("/{id}")

@@ -2,8 +2,6 @@ package ruslan.shastkiv.bookstore.exception;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -53,23 +51,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleAuthenticationException(
             AuthenticationException exception) {
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "username or password incorrect");
+        errorResponse.put("error", exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
-//    @ExceptionHandler(BadCredentialsException.class)
-//    public ResponseEntity<Map<String, String>> handleBadCredentialsException() {
-//        Map<String, String> errorResponse = new HashMap<>();
-//        errorResponse.put("error", "Username or password incorrect");
-//        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
-//    }
-
-//    @ExceptionHandler(JwtException.class)
-//    public ResponseEntity<Map<String, String>>
-//    handleJwtException(Exception exception) {
-//        Map<String, String> errorResponse = new HashMap<>();
-//        errorResponse.put("error", exception.getMessage());
-//        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
-//    }
-
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleBadCredentialsException() {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "User password incorrect");
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
 }

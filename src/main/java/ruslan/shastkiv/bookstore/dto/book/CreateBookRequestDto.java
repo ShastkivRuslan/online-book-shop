@@ -2,8 +2,11 @@ package ruslan.shastkiv.bookstore.dto.book;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 import ruslan.shastkiv.bookstore.validation.image.CoverImage;
 import ruslan.shastkiv.bookstore.validation.isbn.Isbn;
@@ -28,4 +31,7 @@ public class CreateBookRequestDto {
 
     @CoverImage
     private String coverImage;
+
+    @NotEmpty(message = "The book must belong to at least one category.")
+    private List<Long> categoryIds = new ArrayList<>();
 }

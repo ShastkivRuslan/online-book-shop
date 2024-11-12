@@ -1,6 +1,8 @@
 package ruslan.shastkiv.bookstore.service.category;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ruslan.shastkiv.bookstore.dto.category.CategoryDto;
 import ruslan.shastkiv.bookstore.dto.category.CategoryRequestDto;
@@ -8,8 +10,6 @@ import ruslan.shastkiv.bookstore.exception.EntityNotFoundException;
 import ruslan.shastkiv.bookstore.mapper.CategoryMapper;
 import ruslan.shastkiv.bookstore.model.Category;
 import ruslan.shastkiv.bookstore.repository.category.CategoryRepository;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +24,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> getAllCategories() {
-        return categoryRepository.findAll().stream().map(categoryMapper::toDto).toList();
+    public Page<CategoryDto> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
     }
 
     @Override
@@ -46,6 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private Category findCategoryById(Long id) {
-        return categoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("нема))))"));
+        return categoryRepository.findById(id).orElseThrow(()
+                -> new EntityNotFoundException("Can`t find category by id: " + id));
     }
 }

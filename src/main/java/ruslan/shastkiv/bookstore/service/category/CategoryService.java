@@ -1,17 +1,15 @@
 package ruslan.shastkiv.bookstore.service.category;
 
 import jakarta.validation.Valid;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ruslan.shastkiv.bookstore.dto.category.CategoryDto;
 import ruslan.shastkiv.bookstore.dto.category.CategoryRequestDto;
-
-import java.util.List;
-
 
 public interface CategoryService {
     CategoryDto addCategory(@Valid CategoryRequestDto requestDto);
 
-    List<CategoryDto> getAllCategories();
+    Page<CategoryDto> getAllCategories(Pageable pageable);
 
     CategoryDto getCategoryById(Long id);
 
