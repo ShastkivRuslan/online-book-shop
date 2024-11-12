@@ -54,7 +54,7 @@ public class BookController {
 
     @Operation(
             summary = "Search for books",
-            description = "Search for books by author, title, or price range. "
+            description = "Search for books by author, title, price range or category id. "
                     + "If only one price is provided, it will be treated as the minimum price, "
                     + "and results will be returned starting from that price. "
                     + "If two prices are provided, they will be treated as "
