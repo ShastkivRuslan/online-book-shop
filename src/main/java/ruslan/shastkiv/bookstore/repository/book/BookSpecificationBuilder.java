@@ -16,6 +16,7 @@ public class BookSpecificationBuilder implements
     private static final String AUTHOR_KEY = "author";
     private static final String TITLE_KEY = "title";
     private static final String PRICE_KEY = "price";
+    private static final String CATEGORY_KEY = "categories";
 
     private final SpecificationProviderManager<Book> bookSpecificationProviderManager;
 
@@ -39,6 +40,12 @@ public class BookSpecificationBuilder implements
             specification = specification.and(bookSpecificationProviderManager
                     .getSpecificationProvider(PRICE_KEY)
                     .getSpecification(searchParameters.prices())
+            );
+        }
+        if (searchParameters.categories() != null && searchParameters.categories().length > 0) {
+            specification = specification.and(bookSpecificationProviderManager
+                    .getSpecificationProvider(CATEGORY_KEY)
+                    .getSpecification(searchParameters.categories())
             );
         }
         return specification;

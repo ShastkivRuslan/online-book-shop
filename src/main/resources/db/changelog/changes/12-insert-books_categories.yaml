@@ -1,0 +1,114 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-books-categories-relations
+      author: shastkiv
+      changes:
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "1"
+              - column:
+                  name: category_id
+                  valueComputed: "1"
+
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "1"
+              - column:
+                  name: category_id
+                  valueComputed: "2"
+
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "2"
+              - column:
+                  name: category_id
+                  valueComputed: "3"
+
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "3"
+              - column:
+                  name: category_id
+                  valueComputed: "1"
+
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "4"
+              - column:
+                  name: category_id
+                  valueComputed: "4"
+
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "5"
+              - column:
+                  name: category_id
+                  valueComputed: "5"
+
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "6"
+              - column:
+                  name: category_id
+                  valueComputed: "2"
+
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "7"
+              - column:
+                  name: category_id
+                  valueComputed: "3"
+
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "8"
+              - column:
+                  name: category_id
+                  valueComputed: "4"
+
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "9"
+              - column:
+                  name: category_id
+                  valueComputed: "5"
+
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "10"
+              - column:
+                  name: category_id
+                  valueComputed: "1"

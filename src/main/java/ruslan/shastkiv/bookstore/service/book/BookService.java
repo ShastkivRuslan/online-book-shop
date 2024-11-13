@@ -3,6 +3,7 @@ package ruslan.shastkiv.bookstore.service.book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ruslan.shastkiv.bookstore.dto.book.BookDto;
+import ruslan.shastkiv.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
 import ruslan.shastkiv.bookstore.dto.book.CreateBookRequestDto;
 
@@ -19,4 +20,5 @@ public interface BookService {
 
     Page<BookDto> search(BookSearchParametersDto searchParametersDto, Pageable pageable);
 
+    Page<BookDtoWithoutCategoryIds> getAllBooksByCategoryId(Long id, Pageable pageable);
 }

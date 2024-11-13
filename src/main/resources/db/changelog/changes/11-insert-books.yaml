@@ -1,0 +1,254 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-books
+      author: shastkiv
+      changes:
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: is_deleted
+                  value: "0"
+              - column:
+                  name: title
+                  value: "The Great Gatsby"
+              - column:
+                  name: author
+                  value: "F. Scott Fitzgerald"
+              - column:
+                  name: isbn
+                  value: "9780743273565"
+              - column:
+                  name: price
+                  value: "10.99"
+              - column:
+                  name: description
+                  value: "A classic novel of the Roaring Twenties."
+              - column:
+                  name: cover_image
+                  value: "gatsby.jpg"
+
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: is_deleted
+                  value: "0"
+              - column:
+                  name: title
+                  value: "To Kill a Mockingbird"
+              - column:
+                  name: author
+                  value: "Harper Lee"
+              - column:
+                  name: isbn
+                  value: "9780061120084"
+              - column:
+                  name: price
+                  value: "8.99"
+              - column:
+                  name: description
+                  value: "A novel about racial injustice in the Deep South."
+              - column:
+                  name: cover_image
+                  value: "mockingbird.jpg"
+
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: is_deleted
+                  value: "0"
+              - column:
+                  name: title
+                  value: "1984"
+              - column:
+                  name: author
+                  value: "George Orwell"
+              - column:
+                  name: isbn
+                  value: "9780451524935"
+              - column:
+                  name: price
+                  value: "9.99"
+              - column:
+                  name: description
+                  value: "A dystopian novel about totalitarianism."
+              - column:
+                  name: cover_image
+                  value: "1984.jpg"
+
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: is_deleted
+                  value: "0"
+              - column:
+                  name: title
+                  value: "Pride and Prejudice"
+              - column:
+                  name: author
+                  value: "Jane Austen"
+              - column:
+                  name: isbn
+                  value: "9780141439518"
+              - column:
+                  name: price
+                  value: "7.99"
+              - column:
+                  name: description
+                  value: "A romantic novel about manners and marriage."
+              - column:
+                  name: cover_image
+                  value: "pride_prejudice.jpg"
+
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: is_deleted
+                  value: "0"
+              - column:
+                  name: title
+                  value: "The Catcher in the Rye"
+              - column:
+                  name: author
+                  value: "J.D. Salinger"
+              - column:
+                  name: isbn
+                  value: "9780316769488"
+              - column:
+                  name: price
+                  value: "6.99"
+              - column:
+                  name: description
+                  value: "A story about teenage rebellion and angst."
+              - column:
+                  name: cover_image
+                  value: "catcher_rye.jpg"
+
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: is_deleted
+                  value: "0"
+              - column:
+                  name: title
+                  value: "Moby-Dick"
+              - column:
+                  name: author
+                  value: "Herman Melville"
+              - column:
+                  name: isbn
+                  value: "9780142437247"
+              - column:
+                  name: price
+                  value: "12.99"
+              - column:
+                  name: description
+                  value: "A novel about the quest for the white whale."
+              - column:
+                  name: cover_image
+                  value: "moby_dick.jpg"
+
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: is_deleted
+                  value: "0"
+              - column:
+                  name: title
+                  value: "War and Peace"
+              - column:
+                  name: author
+                  value: "Leo Tolstoy"
+              - column:
+                  name: isbn
+                  value: "9780199232765"
+              - column:
+                  name: price
+                  value: "14.99"
+              - column:
+                  name: description
+                  value: "A historical novel set during the Napoleonic wars."
+              - column:
+                  name: cover_image
+                  value: "war_peace.jpg"
+
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: is_deleted
+                  value: "0"
+              - column:
+                  name: title
+                  value: "Crime and Punishment"
+              - column:
+                  name: author
+                  value: "Fyodor Dostoevsky"
+              - column:
+                  name: isbn
+                  value: "9780143058144"
+              - column:
+                  name: price
+                  value: "11.99"
+              - column:
+                  name: description
+                  value: "A novel about guilt, redemption, and justice."
+              - column:
+                  name: cover_image
+                  value: "crime_punishment.jpg"
+
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: is_deleted
+                  value: "0"
+              - column:
+                  name: title
+                  value: "Brave New World"
+              - column:
+                  name: author
+                  value: "Aldous Huxley"
+              - column:
+                  name: isbn
+                  value: "9780060850524"
+              - column:
+                  name: price
+                  value: "9.49"
+              - column:
+                  name: description
+                  value: "A novel about a dystopian future society."
+              - column:
+                  name: cover_image
+                  value: "brave_new_world.jpg"
+
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: is_deleted
+                  value: "0"
+              - column:
+                  name: title
+                  value: "The Hobbit"
+              - column:
+                  name: author
+                  value: "J.R.R. Tolkien"
+              - column:
+                  name: isbn
+                  value: "9780547928227"
+              - column:
+                  name: price
+                  value: "10.49"
+              - column:
+                  name: description
+                  value: "A fantasy novel about the journey of Bilbo Baggins."
+              - column:
+                  name: cover_image
+                  value: "hobbit.jpg"
