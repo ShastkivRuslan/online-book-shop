@@ -76,15 +76,15 @@ public class BookServiceImpl implements BookService {
                 -> new EntityNotFoundException("Can t find book by id: " + id));
     }
 
-    private Set<Category> initCategories(List<Long> categoryIds) {
+    private Set<Category> initCategories(Set<Long> categoryIds) {
         List<Category> categoriesByIds = categoryRepository.findAllById(categoryIds);
 
-        Set<Long> checkList = categoriesByIds.stream()
+        Set<Long> categoryIdsInDB = categoriesByIds.stream()
                 .map(Category::getId)
                 .collect(Collectors.toSet());
 
         for (Long id : categoryIds) {
-            if (!checkList.contains(id)) {
+            if (!categoryIdsInDB.contains(id)) {
                 throw new EntityNotFoundException("Can`t find category by id: " + id);
             }
         }

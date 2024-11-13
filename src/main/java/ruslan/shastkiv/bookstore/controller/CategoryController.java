@@ -35,6 +35,7 @@ public class CategoryController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Add a new category",
             description = "This endpoint allows an admin to add a new category.")
     public CategoryDto addCategory(@RequestBody @Valid CategoryRequestDto requestDto) {
