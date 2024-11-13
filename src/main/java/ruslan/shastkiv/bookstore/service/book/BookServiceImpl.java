@@ -90,5 +90,4 @@ public class BookServiceImpl implements BookService {
         }
         return new HashSet<>(categoriesByIds);
     }
-
 }
