@@ -6,6 +6,7 @@ import ruslan.shastkiv.bookstore.dto.book.BookDto;
 import ruslan.shastkiv.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
 import ruslan.shastkiv.bookstore.dto.book.CreateBookRequestDto;
+import ruslan.shastkiv.bookstore.model.Book;
 
 public interface BookService {
     BookDto createBook(CreateBookRequestDto requestDto);
@@ -21,4 +22,6 @@ public interface BookService {
     Page<BookDto> search(BookSearchParametersDto searchParametersDto, Pageable pageable);
 
     Page<BookDtoWithoutCategoryIds> getAllBooksByCategoryId(Long id, Pageable pageable);
+
+    Book findBookById(Long id);
 }

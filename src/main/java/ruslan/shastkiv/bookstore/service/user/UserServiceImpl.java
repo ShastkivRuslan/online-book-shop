@@ -2,6 +2,7 @@ package ruslan.shastkiv.bookstore.service.user;
 
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ruslan.shastkiv.bookstore.dto.user.UserDto;
@@ -39,5 +40,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         shoppingCartService.createShoppingCart(user);
         return userMapper.toDto(user);
+    }
+
+    @Override
+    public Long getUserId(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return user.getId();
     }
 }

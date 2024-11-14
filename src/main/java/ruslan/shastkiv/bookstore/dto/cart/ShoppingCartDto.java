@@ -1,9 +1,8 @@
 package ruslan.shastkiv.bookstore.dto.cart;
 
+import java.util.Set;
 import ruslan.shastkiv.bookstore.dto.item.CartItemDto;
 
-import java.util.Set;
-
-public record ShoppingCartDto(String userId,
+public record ShoppingCartDto(Long userId,
                               Set<CartItemDto> cartItems) {
 }
