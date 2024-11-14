@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ruslan.shastkiv.bookstore.dto.cart.ShoppingCartDto;
 import ruslan.shastkiv.bookstore.dto.item.CartItemDto;
@@ -15,24 +17,30 @@ import ruslan.shastkiv.bookstore.dto.item.UpdateCartItemRequestDto;
 @RequestMapping("/cart")
 public class ShoppingCartController {
     @GetMapping
-    public Page<ShoppingCartDto> getShoppingCart(@ParameterObject @PageableDefault Pageable pageable) {
+    @PreAuthorize("hasRole('USER')")
+    public Page<ShoppingCartDto> getShoppingCart(
+            Authentication authentication,
+            @ParameterObject @PageableDefault Pageable pageable) {
         return null;
         //todo
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public CartItemDto addBookToCart(CartItemRequestDto requestDto) {
         return null;
         //todo
     }
 
     @PutMapping("/items/{cartItemId}")
+    @PreAuthorize("hasRole('USER')")
     public CartItemDto updateQuantity(@PathVariable Long cartItemId, UpdateCartItemRequestDto requestDto) {
         return null;
         //todo
     }
 
     @DeleteMapping("/items/{cartItemId}")
+    @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeBookFromCart(@PathVariable Long cartItemId) {
 

@@ -13,6 +13,7 @@ import ruslan.shastkiv.bookstore.model.Role;
 import ruslan.shastkiv.bookstore.model.User;
 import ruslan.shastkiv.bookstore.repository.role.RoleRepository;
 import ruslan.shastkiv.bookstore.repository.user.UserRepository;
+import ruslan.shastkiv.bookstore.service.cart.ShoppingCartService;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
     public UserDto register(UserRegistrationRequestDto registrationRequestDto) {
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(roleRepository.findByRoleName(Role.RoleName.ROLE_USER)
                 .orElseThrow(() -> new EntityNotFoundException("Role not found!"))));
         userRepository.save(user);
+        shoppingCartService.createShoppingCart(user);
         return userMapper.toDto(user);
     }
 }
