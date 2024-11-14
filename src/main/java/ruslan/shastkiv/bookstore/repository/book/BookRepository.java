@@ -9,7 +9,8 @@ import org.springframework.data.repository.query.Param;
 import ruslan.shastkiv.bookstore.model.Book;
 
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
-    @Query("SELECT b FROM Book b JOIN b.categories c WHERE c.id = :categoryId AND b.isDeleted = FALSE")
+    @Query("SELECT b FROM Book b JOIN b.categories c WHERE c.id = :categoryId "
+            + "AND b.isDeleted = FALSE")
     Page<Book> findBooksByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
 
     @Query("SELECT b FROM Book b LEFT JOIN FETCH b.categories WHERE b.isDeleted = FALSE")

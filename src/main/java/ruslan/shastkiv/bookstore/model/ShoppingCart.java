@@ -1,8 +1,8 @@
 package ruslan.shastkiv.bookstore.model;
 
-import java.util.Set;
-
 import jakarta.persistence.*;
+
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +16,6 @@ public class ShoppingCart {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
