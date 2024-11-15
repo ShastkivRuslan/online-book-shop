@@ -74,7 +74,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book findBookById(Long id) {
         return bookRepository.findById(id).orElseThrow(()
-                -> new EntityNotFoundException("Can t find book by id: " + id));
+                -> new EntityNotFoundException("Can t find book by id: [" + id + "]"));
     }
 
     private Set<Category> initCategories(Set<Long> categoryIds) {
@@ -86,7 +86,7 @@ public class BookServiceImpl implements BookService {
 
         for (Long id : categoryIds) {
             if (!categoryIdsInDB.contains(id)) {
-                throw new EntityNotFoundException("Can`t find category by id: " + id);
+                throw new EntityNotFoundException("Can`t find category by id: [" + id + "]");
             }
         }
         return new HashSet<>(categoriesByIds);

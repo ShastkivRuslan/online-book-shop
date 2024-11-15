@@ -27,7 +27,6 @@ public interface BookMapper {
         book.setId(bookId);
         return book;
     }
-
 }
 
 

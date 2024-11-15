@@ -43,33 +43,34 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    public void removeCartItem(Long userId, Long cartItemId) {
+        CartItem cartItem = getByCartItemIdAndUserId(userId, cartItemId);
+        cartItemRepository.delete(cartItem);
+    }
+
+    @Override
     @Transactional
     public ShoppingCartDto updateItemQuantity(Long userId,
                                                Long cartItemId,
                                                UpdateCartItemRequestDto requestDto) {
-        CartItem cartItem = getByCartAndUserId(userId, cartItemId);
+        CartItem cartItem = getByCartItemIdAndUserId(userId, cartItemId);
         cartItem.setQuantity(requestDto.quantity());
         return shoppingCartMapper.toDto(
                 shoppingCartRepository.save(cartItem.getShoppingCart()));
     }
 
-    @Override
-    public void removeCartItem(Long userId, Long cartItemId) {
-        CartItem cartItem = getByCartAndUserId(userId, cartItemId);
-        cartItemRepository.delete(cartItem);
+    private CartItem getByCartItemIdAndUserId(Long userId, Long cartItemId) {
+        return cartItemRepository.findByIdAndShoppingCartId(cartItemId, userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Cant find cart item with ID [" + cartItemId
+                                + "] in the shopping cart for user ID [" + userId + "]."));
     }
 
     private ShoppingCart findShoppingCart(Long id) {
         return shoppingCartRepository.findById(id).orElseThrow(()
-                -> new EntityNotFoundException("Cant find shopping cart by user id: " + id));
+                -> new EntityNotFoundException("Cant find shopping cart by user id: [" + id + "]"));
     }
 
-    private CartItem getByCartAndUserId(Long userId, Long cartItemId) {
-        return cartItemRepository.findByIdAndShoppingCartId(cartItemId, userId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Cart item with ID [ " + cartItemId
-                                + " ] or Shopping Cart for user ID [ " + userId + " ] not found"));
-    }
 
     private ShoppingCart addCartItem(ShoppingCart shoppingCart, CartItemRequestDto requestDto) {
         CartItem cartItem = cartItemRepository
