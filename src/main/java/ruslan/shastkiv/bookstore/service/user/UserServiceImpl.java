@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ruslan.shastkiv.bookstore.dto.user.UserDto;
 import ruslan.shastkiv.bookstore.dto.user.UserRegistrationRequestDto;
 import ruslan.shastkiv.bookstore.exception.EntityNotFoundException;
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final ShoppingCartService shoppingCartService;
 
     @Override
+    @Transactional
     public UserDto register(UserRegistrationRequestDto registrationRequestDto) {
         if (userRepository.existsByEmail(registrationRequestDto.email())) {
             throw new RegistrationException("User with email ["

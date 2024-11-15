@@ -34,7 +34,7 @@ databaseChangeLog:
             baseColumnNames: shopping_cart_id
             constraintName: fk_cart_items_shopping_cart
             referencedTableName: shopping_carts
-            referencedColumnNames: user_id
+            referencedColumnNames: id
 
         - addForeignKeyConstraint:
             baseTableName: cart_items

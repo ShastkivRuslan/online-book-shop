@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ruslan.shastkiv.bookstore.dto.cart.ShoppingCartDto;
-import ruslan.shastkiv.bookstore.dto.item.CartItemDto;
 import ruslan.shastkiv.bookstore.dto.item.CartItemRequestDto;
 import ruslan.shastkiv.bookstore.dto.item.UpdateCartItemRequestDto;
 import ruslan.shastkiv.bookstore.service.cart.ShoppingCartService;
-import ruslan.shastkiv.bookstore.service.item.CartItemService;
 import ruslan.shastkiv.bookstore.service.user.UserService;
 
 @RestController
@@ -30,7 +28,6 @@ import ruslan.shastkiv.bookstore.service.user.UserService;
 @Tag(name = "Shopping Cart", description = "Endpoints for managing the shopping cart")
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
-    private final CartItemService cartItemService;
     private final UserService userService;
 
     @GetMapping
@@ -44,7 +41,7 @@ public class ShoppingCartController {
     @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Add a book to the shopping cart")
-    public CartItemDto addBook(
+    public ShoppingCartDto addBook(
             Authentication authentication,
             @RequestBody @Valid CartItemRequestDto requestDto) {
         return shoppingCartService.addBookToCart(
@@ -54,11 +51,11 @@ public class ShoppingCartController {
     @PutMapping("/items/{cartItemId}")
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Update quantity of a cart item")
-    public CartItemDto updateQuantity(
+    public ShoppingCartDto updateQuantity(
             @PathVariable Long cartItemId,
             Authentication authentication,
             @RequestBody @Valid UpdateCartItemRequestDto requestDto) {
-        return cartItemService.updateItemQuantity(
+        return shoppingCartService.updateItemQuantity(
                 userService.getUserId(authentication), cartItemId, requestDto);
     }
 
@@ -67,6 +64,6 @@ public class ShoppingCartController {
     @Operation(summary = "Remove a book from the shopping cart")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeBookFromCart(@PathVariable Long cartItemId, Authentication authentication) {
-        cartItemService.removeCartItem(userService.getUserId(authentication), cartItemId);
+        shoppingCartService.removeCartItem(userService.getUserId(authentication), cartItemId);
     }
 }
