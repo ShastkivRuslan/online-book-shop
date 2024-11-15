@@ -1,5 +1,7 @@
 package ruslan.shastkiv.bookstore.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,7 @@ import ruslan.shastkiv.bookstore.service.user.UserService;
 @RestController
 @RequestMapping("/cart")
 @RequiredArgsConstructor
+@Tag(name = "Shopping Cart", description = "Endpoints for managing the shopping cart")
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
     private final CartItemService cartItemService;
@@ -32,12 +35,15 @@ public class ShoppingCartController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Get the shopping cart of the current user")
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         return shoppingCartService.getShoppingCart(userService.getUserId(authentication));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Add a book to the shopping cart")
     public CartItemDto addBook(
             Authentication authentication,
             @RequestBody @Valid CartItemRequestDto requestDto) {
@@ -47,6 +53,7 @@ public class ShoppingCartController {
 
     @PutMapping("/items/{cartItemId}")
     @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Update quantity of a cart item")
     public CartItemDto updateQuantity(
             @PathVariable Long cartItemId,
             Authentication authentication,
@@ -57,8 +64,9 @@ public class ShoppingCartController {
 
     @DeleteMapping("/items/{cartItemId}")
     @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Remove a book from the shopping cart")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeBookFromCart(@PathVariable Long cartItemId) {
-
+    public void removeBookFromCart(@PathVariable Long cartItemId, Authentication authentication) {
+        cartItemService.removeCartItem(userService.getUserId(authentication), cartItemId);
     }
 }

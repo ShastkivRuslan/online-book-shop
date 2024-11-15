@@ -38,13 +38,15 @@ public class CartItemServiceImpl implements CartItemService {
     public CartItemDto updateItemQuantity(Long userId,
                                           Long cartItemId,
                                           UpdateCartItemRequestDto requestDto) {
-        CartItem cartItem = cartItemRepository.findByIdAndShoppingCartId(cartItemId, userId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                                "Cart item with ID [ " + cartItemId
-                                + " ] or Shopping Cart with ID [ " + userId + " ] not found"));
-
+        CartItem cartItem = getByCartAndUserId(userId, cartItemId);
         cartItem.setQuantity(requestDto.quantity());
         return cartItemMapper.toDto(cartItemRepository.save(cartItem));
+    }
+
+    @Override
+    public void removeCartItem(Long userId, Long cartItemId) {
+        CartItem cartItem = getByCartAndUserId(userId, cartItemId);
+        cartItemRepository.delete(cartItem);
     }
 
     private CartItem initCartItem(ShoppingCart shoppingCart, CartItemRequestDto requestDto) {
@@ -53,5 +55,12 @@ public class CartItemServiceImpl implements CartItemService {
         cartItem.setShoppingCart(shoppingCart);
         cartItem.setQuantity(requestDto.quantity());
         return cartItem;
+    }
+
+    private CartItem getByCartAndUserId(Long userId, Long cartItemId) {
+        return cartItemRepository.findByIdAndShoppingCartId(cartItemId, userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Cart item with ID [ " + cartItemId
+                                + " ] or Shopping Cart for user ID [ " + userId + " ] not found"));
     }
 }

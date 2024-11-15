@@ -13,4 +13,6 @@ public interface CartItemService {
     CartItemDto updateItemQuantity(Long userId,
                                    Long cartItemId,
                                    @Valid UpdateCartItemRequestDto requestDto);
+
+    void removeCartItem(Long userId, Long cartItemId);
 }

@@ -10,6 +10,4 @@ import ruslan.shastkiv.bookstore.model.ShoppingCart;
 public interface ShoppingCartMapper {
     @Mapping(target = "userId", source = "user.id")
     ShoppingCartDto toDto(ShoppingCart shoppingCart);
-
-    ShoppingCart toEntity(ShoppingCartDto shoppingCartDto);
 }

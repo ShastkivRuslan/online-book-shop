@@ -1,4 +1,7 @@
 package ruslan.shastkiv.bookstore.dto.item;
 
-public record UpdateCartItemRequestDto(int quantity) {
+import jakarta.validation.constraints.Min;
+
+public record UpdateCartItemRequestDto(@Min(value = 1, message = "Quantity must be at least 1")
+                                       int quantity) {
 }
