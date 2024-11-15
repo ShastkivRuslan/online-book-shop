@@ -71,7 +71,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 -> new EntityNotFoundException("Cant find shopping cart by user id: [" + id + "]"));
     }
 
-
     private ShoppingCart addCartItem(ShoppingCart shoppingCart, CartItemRequestDto requestDto) {
         CartItem cartItem = cartItemRepository
                 .findByBookIdAndShoppingCartId(requestDto.bookId(), shoppingCart.getId())
