@@ -37,7 +37,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<BookDto> getAll(Pageable pageable) {
-        return bookRepository.findAll(pageable)
+        return bookRepository.findAllWithCategories(pageable)
                 .map(bookMapper::toDto);
     }
 
@@ -71,9 +71,10 @@ public class BookServiceImpl implements BookService {
                 .map(bookMapper::toDtoWithoutCategoryIds);
     }
 
-    private Book findBookById(Long id) {
+    @Override
+    public Book findBookById(Long id) {
         return bookRepository.findById(id).orElseThrow(()
-                -> new EntityNotFoundException("Can t find book by id: " + id));
+                -> new EntityNotFoundException("Can t find book by id: [" + id + "]"));
     }
 
     private Set<Category> initCategories(Set<Long> categoryIds) {
@@ -85,7 +86,7 @@ public class BookServiceImpl implements BookService {
 
         for (Long id : categoryIds) {
             if (!categoryIdsInDB.contains(id)) {
-                throw new EntityNotFoundException("Can`t find category by id: " + id);
+                throw new EntityNotFoundException("Can`t find category by id: [" + id + "]");
             }
         }
         return new HashSet<>(categoriesByIds);
