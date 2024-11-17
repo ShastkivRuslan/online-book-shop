@@ -38,10 +38,15 @@ public class Order {
     @Column(nullable = false)
     private String shippingAddress;
 
-    @OneToMany
+    @OneToMany(mappedBy = "order")
     private Set<OrderItem> orderItems = new HashSet<>();
 
     public enum Status {
+        PENDING,
+        PROCESSING,
+        SHIPPED,
+        DELIVERED,
+        ARCHIVED
     }
 
 }
