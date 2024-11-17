@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_orders_table
+      author: shastkiv
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: ENUM('PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'ARCHIVED')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total
+                  type: numeric(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: order_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: shipping_address
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: orders
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_orders_user
