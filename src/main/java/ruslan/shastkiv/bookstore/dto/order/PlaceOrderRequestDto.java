@@ -1,4 +1,6 @@
 package ruslan.shastkiv.bookstore.dto.order;
 
-public record PlaceOrderRequestDto() {
+import jakarta.validation.constraints.NotBlank;
+
+public record PlaceOrderRequestDto(@NotBlank String shippingAddress) {
 }
