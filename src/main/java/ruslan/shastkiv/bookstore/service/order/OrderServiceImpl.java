@@ -14,7 +14,7 @@ import ruslan.shastkiv.bookstore.dto.order.OrderDto;
 import ruslan.shastkiv.bookstore.dto.order.OrderItemDto;
 import ruslan.shastkiv.bookstore.dto.order.PlaceOrderRequestDto;
 import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
-import ruslan.shastkiv.bookstore.exception.EmtyShoppingCartException;
+import ruslan.shastkiv.bookstore.exception.EmptyShoppingCartException;
 import ruslan.shastkiv.bookstore.exception.EnptyShoppingCartException;
 import ruslan.shastkiv.bookstore.exception.EntityNotFoundException;
 import ruslan.shastkiv.bookstore.mapper.OrderItemMapper;
@@ -102,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
 
     private void checkIsEmptyShoppingCart(ShoppingCart userShoppingCart) {
         if (userShoppingCart.getCartItems().isEmpty()) {
-            throw new EmtyShoppingCartException(
+            throw new EmptyShoppingCartException(
                     "Shopping cart is empty for user: [" + userShoppingCart.getId() + "]"
             );
         }
