@@ -2,12 +2,15 @@ package ruslan.shastkiv.bookstore.service.order;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import ruslan.shastkiv.bookstore.dto.order.OrderDto;
 import ruslan.shastkiv.bookstore.dto.order.OrderItemDto;
+import ruslan.shastkiv.bookstore.dto.order.PlaceOrderRequestDto;
 import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
+import ruslan.shastkiv.bookstore.exception.EnptyShoppingCartException;
 
 public interface OrderService {
-    OrderDto placeOrderByUserId(Long userId);
+    OrderDto placeOrderByUserId(Authentication authentication, PlaceOrderRequestDto requestDto) throws EnptyShoppingCartException;
 
     Page<OrderDto> getAllOrdersByUserId(Long userId, Pageable pageable);
 

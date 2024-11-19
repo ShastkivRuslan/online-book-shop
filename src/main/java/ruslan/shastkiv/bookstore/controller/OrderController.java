@@ -18,6 +18,7 @@ import ruslan.shastkiv.bookstore.dto.order.OrderDto;
 import ruslan.shastkiv.bookstore.dto.order.OrderItemDto;
 import ruslan.shastkiv.bookstore.dto.order.PlaceOrderRequestDto;
 import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
+import ruslan.shastkiv.bookstore.exception.EnptyShoppingCartException;
 import ruslan.shastkiv.bookstore.service.order.OrderService;
 import ruslan.shastkiv.bookstore.service.user.UserService;
 
@@ -31,8 +32,8 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto placeOrder(@RequestBody @Valid PlaceOrderRequestDto requestDto,
-                               Authentication authentication) {
-        return orderService.placeOrderByUserId(userService.getUserId(authentication));
+                               Authentication authentication) throws EnptyShoppingCartException {
+        return orderService.placeOrderByUserId(authentication, requestDto);
     }
 
     @GetMapping
@@ -43,18 +44,18 @@ public class OrderController {
 
     @PatchMapping("/{orderId}")
     public OrderDto updateOrderStatus(@PathVariable Long orderId,
-                                      @Valid UpdateOrderStatusRequestDto statusRequestDto) {
+                                      @Valid @RequestBody UpdateOrderStatusRequestDto statusRequestDto) {
         return orderService.updateOrderStatus(orderId, statusRequestDto);
     }
 
     @GetMapping("/{orderId}/items")
     public Page<OrderItemDto> getOrderItems(@PathVariable Long orderId,
                                             Pageable pageable) {
-        return orderService.getOrderItemsByOrderId(orderId, pageable);//todo
+        return orderService.getOrderItemsByOrderId(orderId, pageable);
     }
 
     @GetMapping("/{orderId}/items/{itemId}")
     public OrderItemDto getOrderItem(@PathVariable Long orderId, @PathVariable Long itemId) {
-        return orderService.getOrderItem(orderId, itemId);//todo
+        return orderService.getOrderItem(orderId, itemId);
     }
 }

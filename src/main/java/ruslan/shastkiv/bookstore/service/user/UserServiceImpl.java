@@ -49,4 +49,9 @@ public class UserServiceImpl implements UserService {
         User user = (User) authentication.getPrincipal();
         return user.getId();
     }
+
+    @Override
+    public User getUser(Authentication authentication) {
+        return (User) authentication.getPrincipal();
+    }
 }
