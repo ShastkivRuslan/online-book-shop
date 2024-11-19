@@ -15,7 +15,6 @@ import ruslan.shastkiv.bookstore.dto.order.OrderItemDto;
 import ruslan.shastkiv.bookstore.dto.order.PlaceOrderRequestDto;
 import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
 import ruslan.shastkiv.bookstore.exception.EmptyShoppingCartException;
-import ruslan.shastkiv.bookstore.exception.EnptyShoppingCartException;
 import ruslan.shastkiv.bookstore.exception.EntityNotFoundException;
 import ruslan.shastkiv.bookstore.mapper.OrderItemMapper;
 import ruslan.shastkiv.bookstore.mapper.OrderMapper;
@@ -40,11 +39,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDto placeOrderByUserId(Authentication authentication, PlaceOrderRequestDto requestDto) throws EnptyShoppingCartException {
+    public OrderDto placeOrderByUserId(Authentication authentication, PlaceOrderRequestDto requestDto) {
         User user = userService.getUser(authentication);
         ShoppingCart userShoppingCart = shoppingCartService.findShoppingCart(user.getId());
         checkIsEmptyShoppingCart(userShoppingCart);
-        Order userOrder = initOrder(userShoppingCart, requestDto);
+        Order userOrder = createOrder(userShoppingCart, requestDto);
         Set<OrderItem> orderItems = createOrderItems(userShoppingCart, userOrder);
         userOrder.setOrderItems(orderItems);
         userOrder.setTotal(calculateTotalPrice(orderItems));
@@ -76,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
         return orderItemMapper.toDto(orderItem);
     }
 
-    private Order initOrder(ShoppingCart userShoppingCart, PlaceOrderRequestDto requestDto) {
+    private Order createOrder(ShoppingCart userShoppingCart, PlaceOrderRequestDto requestDto) {
         Order order = orderMapper.toOrder(userShoppingCart);
         order.setStatus(Order.Status.PENDING);
         order.setShippingAddress(requestDto.shippingAddress());
