@@ -65,6 +65,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                         "Cant find cart item with ID [" + cartItemId
                                 + "] in the shopping cart for user ID [" + userId + "]."));
     }
+
     @Override
     public ShoppingCart findShoppingCart(Long id) {
         return shoppingCartRepository.findById(id).orElseThrow(()

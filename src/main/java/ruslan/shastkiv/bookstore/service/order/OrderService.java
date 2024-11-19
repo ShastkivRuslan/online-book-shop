@@ -10,7 +10,7 @@ import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
 import ruslan.shastkiv.bookstore.exception.EnptyShoppingCartException;
 
 public interface OrderService {
-    OrderDto placeOrderByUserId(Authentication authentication, PlaceOrderRequestDto requestDto) throws EnptyShoppingCartException;
+    OrderDto placeOrderByUserId(Authentication authentication, PlaceOrderRequestDto requestDto);
 
     Page<OrderDto> getAllOrdersByUserId(Long userId, Pageable pageable);
 

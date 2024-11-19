@@ -56,8 +56,9 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update order status",
             description = "Allows an admin to update the status of an order.")
-    public OrderDto updateOrderStatus(@PathVariable Long orderId,
-                                      @Valid @RequestBody UpdateOrderStatusRequestDto statusRequestDto) {
+    public OrderDto updateOrderStatus(
+            @PathVariable Long orderId,
+            @Valid @RequestBody UpdateOrderStatusRequestDto statusRequestDto) {
         return orderService.updateOrderStatus(orderId, statusRequestDto);
     }
 
