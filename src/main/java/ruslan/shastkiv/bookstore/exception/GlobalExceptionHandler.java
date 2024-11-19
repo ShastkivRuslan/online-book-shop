@@ -62,9 +62,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(EmptyShoppingCartException.class)
+    @ExceptionHandler(OrderProcessingException.class)
     public ResponseEntity<Map<String, String>> handleEmptyShoppingCartException(
-            EmptyShoppingCartException exception) {
+            OrderProcessingException exception) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

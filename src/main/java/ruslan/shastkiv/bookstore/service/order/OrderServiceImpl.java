@@ -14,14 +14,13 @@ import ruslan.shastkiv.bookstore.dto.order.OrderDto;
 import ruslan.shastkiv.bookstore.dto.order.OrderItemDto;
 import ruslan.shastkiv.bookstore.dto.order.PlaceOrderRequestDto;
 import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
-import ruslan.shastkiv.bookstore.exception.EmptyShoppingCartException;
 import ruslan.shastkiv.bookstore.exception.EntityNotFoundException;
+import ruslan.shastkiv.bookstore.exception.OrderProcessingException;
 import ruslan.shastkiv.bookstore.mapper.OrderItemMapper;
 import ruslan.shastkiv.bookstore.mapper.OrderMapper;
 import ruslan.shastkiv.bookstore.model.Order;
 import ruslan.shastkiv.bookstore.model.OrderItem;
 import ruslan.shastkiv.bookstore.model.ShoppingCart;
-import ruslan.shastkiv.bookstore.model.User;
 import ruslan.shastkiv.bookstore.repository.order.OrderItemRepository;
 import ruslan.shastkiv.bookstore.repository.order.OrderRepository;
 import ruslan.shastkiv.bookstore.service.cart.ShoppingCartService;
@@ -41,8 +40,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto placeOrderByUserId(Authentication authentication,
                                        PlaceOrderRequestDto requestDto) {
-        User user = userService.getUser(authentication);
-        ShoppingCart userShoppingCart = shoppingCartService.findShoppingCart(user.getId());
+        ShoppingCart userShoppingCart =
+                shoppingCartService.findShoppingCart(userService.getUserId(authentication));
         checkIsEmptyShoppingCart(userShoppingCart);
         Order userOrder = createOrder(userShoppingCart, requestDto);
         Set<OrderItem> orderItems = createOrderItems(userShoppingCart, userOrder);
@@ -104,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
 
     private void checkIsEmptyShoppingCart(ShoppingCart userShoppingCart) {
         if (userShoppingCart.getCartItems().isEmpty()) {
-            throw new EmptyShoppingCartException(
+            throw new OrderProcessingException(
                     "Shopping cart is empty for user: [" + userShoppingCart.getId() + "]"
             );
         }
