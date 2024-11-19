@@ -39,7 +39,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDto placeOrderByUserId(Authentication authentication, PlaceOrderRequestDto requestDto) {
+    public OrderDto placeOrderByUserId(Authentication authentication,
+                                       PlaceOrderRequestDto requestDto) {
         User user = userService.getUser(authentication);
         ShoppingCart userShoppingCart = shoppingCartService.findShoppingCart(user.getId());
         checkIsEmptyShoppingCart(userShoppingCart);
@@ -47,6 +48,7 @@ public class OrderServiceImpl implements OrderService {
         Set<OrderItem> orderItems = createOrderItems(userShoppingCart, userOrder);
         userOrder.setOrderItems(orderItems);
         userOrder.setTotal(calculateTotalPrice(orderItems));
+        shoppingCartService.clearShoppingCart(userShoppingCart);
         return orderMapper.toDto(orderRepository.save(userOrder));
     }
 
@@ -89,13 +91,14 @@ public class OrderServiceImpl implements OrderService {
                     OrderItem orderItem = orderItemMapper.toOrderItem(cartItem);
                     orderItem.setOrder(order);
                     return orderItem;
-                } )
+                })
                 .collect(Collectors.toSet());
     }
 
     private BigDecimal calculateTotalPrice(Set<OrderItem> orderItems) {
         return orderItems.stream()
-                .map(orderItem -> orderItem.getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())))
+                .map(orderItem -> orderItem.getPrice()
+                        .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

@@ -1,6 +1,7 @@
 package ruslan.shastkiv.bookstore.exception;
 
 public class EmptyShoppingCartException extends RuntimeException {
-    public EmptyShoppingCartException(String s) {
+    public EmptyShoppingCartException(String message) {
+        super(message);
     }
 }

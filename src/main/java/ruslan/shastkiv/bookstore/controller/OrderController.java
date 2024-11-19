@@ -21,7 +21,6 @@ import ruslan.shastkiv.bookstore.dto.order.OrderDto;
 import ruslan.shastkiv.bookstore.dto.order.OrderItemDto;
 import ruslan.shastkiv.bookstore.dto.order.PlaceOrderRequestDto;
 import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
-import ruslan.shastkiv.bookstore.exception.EnptyShoppingCartException;
 import ruslan.shastkiv.bookstore.service.order.OrderService;
 import ruslan.shastkiv.bookstore.service.user.UserService;
 
@@ -39,7 +38,7 @@ public class OrderController {
     @Operation(summary = "Place an order",
             description = "Places a new order for the authenticated user.")
     public OrderDto placeOrder(@RequestBody @Valid PlaceOrderRequestDto requestDto,
-                               Authentication authentication) throws EnptyShoppingCartException {
+                               Authentication authentication) {
         return orderService.placeOrderByUserId(authentication, requestDto);
     }
 
