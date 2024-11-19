@@ -27,7 +27,8 @@ import ruslan.shastkiv.bookstore.service.user.UserService;
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
-@Tag(name = "Order Management", description = "Operations related to orders and order items")
+@Tag(name = "Order Management",
+        description = "Operations related to orders and order items")
 public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
