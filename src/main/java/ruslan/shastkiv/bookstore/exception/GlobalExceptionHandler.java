@@ -61,4 +61,12 @@ public class GlobalExceptionHandler {
         errorResponse.put("error", "User password incorrect");
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(OrderProcessingException.class)
+    public ResponseEntity<Map<String, String>> handleEmptyShoppingCartException(
+            OrderProcessingException exception) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 }

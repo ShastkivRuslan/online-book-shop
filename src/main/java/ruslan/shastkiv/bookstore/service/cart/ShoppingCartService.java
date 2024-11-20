@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import ruslan.shastkiv.bookstore.dto.cart.ShoppingCartDto;
 import ruslan.shastkiv.bookstore.dto.item.CartItemRequestDto;
 import ruslan.shastkiv.bookstore.dto.item.UpdateCartItemRequestDto;
+import ruslan.shastkiv.bookstore.model.ShoppingCart;
 import ruslan.shastkiv.bookstore.model.User;
 
 public interface ShoppingCartService {
@@ -18,4 +19,8 @@ public interface ShoppingCartService {
                                    @Valid UpdateCartItemRequestDto requestDto);
 
     void removeCartItem(Long userId, Long cartItemId);
+
+    ShoppingCart findShoppingCart(Long id);
+
+    void clearShoppingCart(ShoppingCart shoppingCart);
 }
