@@ -19,3 +19,9 @@ databaseChangeLog:
       file: db/changelog/changes/09-create-orders-table.yaml
   - include:
       file: db/changelog/changes/10-create-order_items-table.yaml
+  - include:
+      file: db/changelog/changes/11-insert-basic-roles.yaml
+  - include:
+      file: db/changelog/changes/12-insert-admin.yaml
+  - include:
+      file: db/changelog/changes/13-insert-user_admin-relations.yaml

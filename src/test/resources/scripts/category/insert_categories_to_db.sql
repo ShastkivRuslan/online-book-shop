@@ -1,3 +1,3 @@
-INSERT INTO categories (id, name, description, is_deleted) VALUES
-    (1, 'Name_of_category_1', 'Description_of_category_1', 0),
-    (2, 'Name_of_category_2', 'Description_of_category_2', 0);
+INSERT INTO categories (id, name, description) VALUES
+    (1, 'Category_1', 'Description_1'),
+    (2, 'Category_2', 'Description_2');

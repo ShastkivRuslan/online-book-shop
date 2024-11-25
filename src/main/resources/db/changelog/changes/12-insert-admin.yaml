@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users
+      author: shastkiv
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: "admin@example.com"
+              - column:
+                  name: password
+                  value: "$2a$10$mHr8mCayoWguJK/.zT3Ai.OS1HYeWmkoHvA8hff5Q3rNgfADaAkLa"
+              - column:
+                  name: first_name
+                  value: "John"
+              - column:
+                  name: last_name
+                  value: "Doe"
+              - column:
+                  name: shipping_address
+                  value: "123 Main St, City, Country"
