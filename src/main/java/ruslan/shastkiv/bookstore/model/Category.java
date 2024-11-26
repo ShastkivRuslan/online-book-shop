@@ -11,6 +11,8 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "categories")
 @Getter
@@ -26,4 +28,17 @@ public class Category {
     private String description;
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return isDeleted == category.isDeleted && Objects.equals(id, category.id) && Objects.equals(name, category.name) && Objects.equals(description, category.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, isDeleted);
+    }
 }
