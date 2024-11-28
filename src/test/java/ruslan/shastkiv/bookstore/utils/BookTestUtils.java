@@ -24,8 +24,6 @@ public class BookTestUtils {
     public static final Long FOURTH_BOOK_ID = 4L;
     public static final Long INVALID_BOOK_ID = 100L;
 
-    public static final String BOOK_TITLE = "Title_1";
-
     public static final String UPDATED_TITLE = "Updated_title_1";
     public static final String NON_EXISTING_TITLE = "Non_existing_title_1";
 
