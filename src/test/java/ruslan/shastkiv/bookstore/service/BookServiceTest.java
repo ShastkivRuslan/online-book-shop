@@ -7,21 +7,21 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.BOOK_TITLE;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.EMPTY_PAGE;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.FIRST_BOOK_ID;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.FIRST_CATEGORY_ID;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.INVALID_BOOK_ID;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.NON_EXISTING_TITLE;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.PAGEABLE;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.PAGE_SIZE;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.createBookById;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.createBookDtoById;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.createBookDtoWithoutCategoryIds;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.createBookRequestDtoById;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.createCategory;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.createSearchParamsDto;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.updateBookRequestDtoById;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.CUSTOM_BOOK_TITLE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.EMPTY_PAGE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.FIRST_BOOK_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.INVALID_BOOK_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.NON_EXISTING_TITLE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.PAGEABLE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.PAGE_SIZE_1;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookById;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookDtoById;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookDtoWithoutCategoryIds;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookRequestDtoById;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createSearchParamsDto;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.updateBookRequestDtoById;
+import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.FIRST_CATEGORY_ID;
+import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.createCategoryById;
 
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +72,7 @@ public class BookServiceTest {
 
         when(bookMapper.toModel(requestDto)).thenReturn(book);
         when(categoryRepository.findAllById(Set.of(FIRST_CATEGORY_ID)))
-                .thenReturn(List.of(createCategory()));
+                .thenReturn(List.of(createCategoryById(FIRST_CATEGORY_ID)));
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toDto(book)).thenReturn(expectedBookDto);
 
@@ -87,13 +87,13 @@ public class BookServiceTest {
             """)
     void getAll_ValidPage_ReturnPageWithBookDto() {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-        Page<Book> bookPage = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE);
+        Page<Book> bookPage = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE_1);
         BookDto bookDto = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
 
         when(bookRepository.findAllWithCategories(PAGEABLE)).thenReturn(bookPage);
         when(bookMapper.toDto(book)).thenReturn(bookDto);
 
-        Page<BookDto> expected = new PageImpl<>(List.of(bookDto), PAGEABLE, PAGE_SIZE);
+        Page<BookDto> expected = new PageImpl<>(List.of(bookDto), PAGEABLE, PAGE_SIZE_1);
         Page<BookDto> actual = bookService.getAll(PAGEABLE);
 
         assertEquals(expected, actual);
@@ -165,10 +165,11 @@ public class BookServiceTest {
         BookSearchParametersDto searchParametersDto = createSearchParamsDto();
 
         Specification<Book> specification = (root, query, criteriaBuilder)
-                -> criteriaBuilder.equal(root.get("title"), BOOK_TITLE);
+                -> criteriaBuilder.equal(
+                        root.get("title"), CUSTOM_BOOK_TITLE.formatted(FIRST_BOOK_ID));
 
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-        Page<Book> books = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE);
+        Page<Book> books = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE_1);
 
         BookDto dto = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
 
@@ -176,7 +177,7 @@ public class BookServiceTest {
         when(specificationBuilder.build(searchParametersDto)).thenReturn(specification);
         when(bookRepository.findAll(specification, PAGEABLE)).thenReturn(books);
 
-        Page<BookDto> expected = new PageImpl<>(List.of(dto), PAGEABLE, PAGE_SIZE);
+        Page<BookDto> expected = new PageImpl<>(List.of(dto), PAGEABLE, PAGE_SIZE_1);
         Page<BookDto> actual = bookService.search(searchParametersDto, PAGEABLE);
 
         assertEquals(expected, actual);
@@ -213,11 +214,12 @@ public class BookServiceTest {
             """)
     void getAllBooksByCategoryId_ValidCategoryId_ReturnBookDtoPage() {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-        Page<Book> books = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE);
+        Page<Book> books = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE_1);
 
-        BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds = createBookDtoWithoutCategoryIds();
+        BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds
+                = createBookDtoWithoutCategoryIds(FIRST_BOOK_ID);
         PageImpl<BookDtoWithoutCategoryIds> expectedPage
-                = new PageImpl<>(List.of(bookDtoWithoutCategoryIds), PAGEABLE, PAGE_SIZE);
+                = new PageImpl<>(List.of(bookDtoWithoutCategoryIds), PAGEABLE, PAGE_SIZE_1);
 
         when(bookRepository.findBooksByCategoryId(FIRST_BOOK_ID, PAGEABLE)).thenReturn(books);
         when(bookMapper.toDtoWithoutCategoryIds(book)).thenReturn(bookDtoWithoutCategoryIds);

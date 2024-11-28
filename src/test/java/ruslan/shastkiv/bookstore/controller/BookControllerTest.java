@@ -3,24 +3,25 @@ package ruslan.shastkiv.bookstore.controller;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.BOOK_AUTHOR;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.BOOK_URL;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.BOOK_URL_WITH_FIRST_BOOK_ID;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.BOOK_URL_WITH_INVALID_ID;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.BOOK_URL_WITH_SECOND_BOOK_ID;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.EMPTY_PAGE;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.FIRST_BOOK_ID;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.FIRST_CATEGORY_ID;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.FOURTH_BOOK_ID;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.INVALID_BOOK_ID;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.NON_EXISTING_TITLE;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.PAGEABLE;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.SEARCH_BOOK_URL;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.UPDATED_TITLE;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.createBookDtoById;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.createBookRequestDtoById;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.updateBookRequestDtoById;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.BOOK_URL;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.BOOK_URL_WITH_FIRST_BOOK_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.BOOK_URL_WITH_INVALID_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.BOOK_URL_WITH_SECOND_BOOK_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.CUSTOM_BOOK_AUTHOR;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.EMPTY_PAGE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.FIRST_BOOK_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.FOURTH_BOOK_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.INVALID_BOOK_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.NON_EXISTING_TITLE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.PAGEABLE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.SEARCH_BOOK_URL;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.UPDATED_TITLE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookDtoById;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookRequestDtoById;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.updateBookRequestDtoById;
+import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.FIRST_CATEGORY_ID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -79,7 +80,6 @@ public class BookControllerTest {
             Should retrieve all books from the catalog as a pageable response
             """)
     public void getAll_GivenBooksInCatalog_ReturnPageDtos() throws Exception {
-        System.out.println(this);
         Page<BookDto> expectedPage = new PageImpl<>(
                 List.of(
                         createBookDtoById(1L, List.of(1L)),
@@ -106,7 +106,6 @@ public class BookControllerTest {
             Should retrieve a book by its ID
             """)
     public void getBookById_BookById_ReturnBookDto() throws Exception {
-        System.out.println(this);
         BookDto expected = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
 
         MvcResult result = mockMvc.perform(
@@ -118,8 +117,7 @@ public class BookControllerTest {
         BookDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
 
-        reflectionEquals(expected, actual);
-        //assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @WithMockUser(username = "user")
@@ -154,7 +152,7 @@ public class BookControllerTest {
 
         MvcResult result = mockMvc.perform(
                         MockMvcRequestBuilders.get(SEARCH_BOOK_URL)
-                                .param("authors", BOOK_AUTHOR)
+                                .param("authors", CUSTOM_BOOK_AUTHOR.formatted(FIRST_BOOK_ID))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -205,12 +203,11 @@ public class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
 
-        BookDto expected = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
+        BookDto expected = createBookDtoById(FOURTH_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         BookDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
 
-        reflectionEquals(expected, actual, "id");
-        //assertEquals(expected, actual);
+        assertTrue(reflectionEquals(expected, actual, "id"));
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -238,8 +235,7 @@ public class BookControllerTest {
         BookDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
 
-        //assertEquals(expected, actual);
-        reflectionEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @WithMockUser(username = "user", roles = {"ADMIN"})

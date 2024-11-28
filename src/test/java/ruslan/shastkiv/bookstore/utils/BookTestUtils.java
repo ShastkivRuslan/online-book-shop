@@ -1,5 +1,7 @@
 package ruslan.shastkiv.bookstore.utils;
 
+import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.FIRST_CATEGORY_ID;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
@@ -10,12 +12,11 @@ import ruslan.shastkiv.bookstore.dto.book.BookDto;
 import ruslan.shastkiv.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
 import ruslan.shastkiv.bookstore.dto.book.CreateBookRequestDto;
-import ruslan.shastkiv.bookstore.dto.category.CategoryDto;
 import ruslan.shastkiv.bookstore.model.Book;
-import ruslan.shastkiv.bookstore.model.Category;
 
-public class TestUtils {
-    public static final int PAGE_SIZE = 1;
+public class BookTestUtils {
+    public static final int PAGE_SIZE_1 = 1;
+    public static final int PAGE_SIZE_2 = 2;
     public static final int EMPTY_PAGE = 0;
     public static final Pageable PAGEABLE = PageRequest.of(0, 10);
 
@@ -23,12 +24,8 @@ public class TestUtils {
     public static final Long FOURTH_BOOK_ID = 4L;
     public static final Long INVALID_BOOK_ID = 100L;
 
-    public static final BigDecimal BOOK_PRICE = BigDecimal.TEN;
     public static final String BOOK_TITLE = "Title_1";
-    public static final String BOOK_AUTHOR = "Author_1";
-    public static final String BOOK_DESCRIPTION = "Description_1";
-    public static final String BOOK_ISBN = "978-3-16-148410-0";
-    public static final String BOOK_COVER_IMAGE = "https://cover_image_1.jpg";
+
     public static final String UPDATED_TITLE = "Updated_title_1";
     public static final String NON_EXISTING_TITLE = "Non_existing_title_1";
 
@@ -37,12 +34,6 @@ public class TestUtils {
     public static final String CUSTOM_BOOK_DESCRIPTION = "Description_%s";
     public static final String CUSTOM_BOOK_ISBN = "978-3-16-148410-%s";
     public static final String CUSTOM_BOOK_COVER_IMAGE = "https://cover_image_%s.jpg";
-
-    public static final Long FIRST_CATEGORY_ID = 1L;
-    public static final String CATEGORY_NAME = "Category_1";
-    public static final String CATEGORY_DESCRIPTION = "Description_1";
-    public static final String CUSTOM_CATEGORY_NAME = "Category_%s";
-    public static final String CUSTOM_CATEGORY_DESCRIPTION = "Description_%s";
 
     public static final String BOOK_URL = "/books";
     public static final String BOOK_URL_WITH_INVALID_ID = "/books/100";
@@ -68,31 +59,23 @@ public class TestUtils {
         return requestDto;
     }
 
-    public static Category createCategory() {
-        Category category = new Category();
-        category.setId(FIRST_CATEGORY_ID);
-        category.setName(CATEGORY_NAME);
-        category.setDescription(CATEGORY_DESCRIPTION);
-        return category;
-    }
-
     public static BookSearchParametersDto createSearchParamsDto() {
         return new BookSearchParametersDto(
-                new String[]{BOOK_AUTHOR},
-                new String[]{BOOK_TITLE},
-                null,
-                null
+                new String[]{CUSTOM_BOOK_AUTHOR.formatted(FIRST_BOOK_ID)},
+                new String[]{CUSTOM_BOOK_TITLE.formatted(FIRST_BOOK_ID)},
+                new String[]{},
+                new String[]{}
                 );
     }
 
-    public static BookDtoWithoutCategoryIds createBookDtoWithoutCategoryIds() {
-        return new BookDtoWithoutCategoryIds(FIRST_BOOK_ID,
-                BOOK_TITLE,
-                BOOK_AUTHOR,
-                BOOK_ISBN,
-                BOOK_PRICE,
-                BOOK_DESCRIPTION,
-                BOOK_COVER_IMAGE
+    public static BookDtoWithoutCategoryIds createBookDtoWithoutCategoryIds(Long id) {
+        return new BookDtoWithoutCategoryIds(id,
+                CUSTOM_BOOK_TITLE.formatted(id),
+                CUSTOM_BOOK_AUTHOR.formatted(id),
+                CUSTOM_BOOK_ISBN.formatted(id),
+                BigDecimal.valueOf(id),
+                CUSTOM_BOOK_DESCRIPTION.formatted(id),
+                CUSTOM_BOOK_COVER_IMAGE.formatted(id)
         );
     }
 
@@ -107,7 +90,7 @@ public class TestUtils {
         book.setCoverImage(CUSTOM_BOOK_COVER_IMAGE.formatted(id));
         book.setCategories(
                 categoryIds.stream()
-                .map(TestUtils::createCategoryById)
+                .map(CategoryTestUtils::createCategoryById)
                 .collect(Collectors.toSet())
         );
         return book;
@@ -124,25 +107,9 @@ public class TestUtils {
         bookDto.setCoverImage(CUSTOM_BOOK_COVER_IMAGE.formatted(id));
         bookDto.setCategories(
                 categoryIds.stream()
-                        .map(TestUtils::createCategoryDtoById)
+                        .map(CategoryTestUtils::createCategoryDtoById)
                         .collect(Collectors.toSet())
         );
         return bookDto;
-    }
-
-    public static Category createCategoryById(Long id) {
-        Category category = new Category();
-        category.setId(id);
-        category.setName(CUSTOM_CATEGORY_NAME.formatted(id));
-        category.setDescription(CUSTOM_CATEGORY_DESCRIPTION.formatted(id));
-        return category;
-    }
-
-    public static CategoryDto createCategoryDtoById(Long id) {
-        return new CategoryDto(
-                id,
-                CUSTOM_CATEGORY_NAME.formatted(id),
-                CUSTOM_CATEGORY_DESCRIPTION.formatted(id)
-        );
     }
 }

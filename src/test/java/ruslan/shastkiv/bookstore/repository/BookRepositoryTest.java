@@ -3,7 +3,7 @@ package ruslan.shastkiv.bookstore.repository;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static ruslan.shastkiv.bookstore.utils.TestUtils.PAGEABLE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.PAGEABLE;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
