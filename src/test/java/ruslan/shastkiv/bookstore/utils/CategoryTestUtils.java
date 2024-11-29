@@ -1,5 +1,9 @@
 package ruslan.shastkiv.bookstore.utils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import org.springframework.test.web.servlet.MvcResult;
 import ruslan.shastkiv.bookstore.dto.category.CategoryDto;
 import ruslan.shastkiv.bookstore.dto.category.CategoryRequestDto;
 import ruslan.shastkiv.bookstore.model.Category;
@@ -62,5 +66,14 @@ public class CategoryTestUtils {
         category.setName(UPDATED_CATEGORY_NAME.formatted(id));
         category.setDescription(CUSTOM_CATEGORY_DESCRIPTION.formatted(id));
         return category;
+    }
+
+    public static List<CategoryDto> getCategoryDtosFromMvcResult(
+            MvcResult result,
+            ObjectMapper objectMapper) throws Exception {
+        return objectMapper.convertValue(
+                objectMapper.readTree(result.getResponse().getContentAsString())
+                        .get("content"), new TypeReference<List<CategoryDto>>() {}
+        );
     }
 }

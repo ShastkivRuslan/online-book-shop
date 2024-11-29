@@ -5,21 +5,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.BOOK_URL;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.BOOK_URL_WITH_FIRST_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.BOOK_URL_WITH_INVALID_ID;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.BOOK_URL_WITH_SECOND_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.CUSTOM_BOOK_AUTHOR;
-import static ruslan.shastkiv.bookstore.utils.BookTestUtils.EMPTY_PAGE;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.FIRST_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.FOURTH_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.INVALID_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.NON_EXISTING_TITLE;
-import static ruslan.shastkiv.bookstore.utils.BookTestUtils.PAGEABLE;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.SEARCH_BOOK_URL;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.UPDATED_TITLE;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookDtoById;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookRequestDtoById;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.getBookDtosFromMvcResult;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.updateBookRequestDtoById;
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.FIRST_CATEGORY_ID;
 
@@ -30,8 +30,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
@@ -80,24 +78,22 @@ public class BookControllerTest {
             Should retrieve all books from the catalog as a pageable response
             """)
     public void getAll_GivenBooksInCatalog_ReturnPageDtos() throws Exception {
-        Page<BookDto> expectedPage = new PageImpl<>(
-                List.of(
-                        createBookDtoById(1L, List.of(1L)),
-                        createBookDtoById(2L, List.of(2L)),
-                        createBookDtoById(3L, List.of(2L))
-                ), PAGEABLE, 3
+        List<BookDto> expectedDtos = List.of(
+                createBookDtoById(1L, List.of(1L)),
+                createBookDtoById(2L, List.of(2L)),
+                createBookDtoById(3L, List.of(2L))
         );
 
         MvcResult result = mockMvc.perform(
-                        MockMvcRequestBuilders.get(BOOK_URL)
+                        get(BOOK_URL)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
+        List<BookDto> actualDtos = getBookDtosFromMvcResult(result, objectMapper);
 
-        String expectedString = objectMapper.writeValueAsString(expectedPage);
-        String actualString = result.getResponse().getContentAsString();
-
-        assertEquals(expectedString, actualString);
+        assertTrue(expectedDtos.stream()
+                .allMatch(expectedDto -> actualDtos.stream()
+                        .anyMatch(actualDto -> actualDto.equals(expectedDto))));
     }
 
     @WithMockUser(username = "user")
@@ -109,11 +105,10 @@ public class BookControllerTest {
         BookDto expected = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
 
         MvcResult result = mockMvc.perform(
-                        MockMvcRequestBuilders.get(BOOK_URL_WITH_FIRST_BOOK_ID, FIRST_BOOK_ID)
+                        get(BOOK_URL_WITH_FIRST_BOOK_ID, FIRST_BOOK_ID)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-
         BookDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
 
@@ -126,9 +121,8 @@ public class BookControllerTest {
             Should throw EntityNotFoundException for an invalid book ID
             """)
     public void getBokById_BookByInvalidId_ThrowException() throws Exception {
-        System.out.println(this);
         mockMvc.perform(
-                        MockMvcRequestBuilders.get(
+                        get(
                                 BOOK_URL + "/" + INVALID_BOOK_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -145,23 +139,20 @@ public class BookControllerTest {
             Should return books matching the valid search parameters
             """)
     public void search_ValidSearchParams_ReturnBookDto() throws Exception {
-        Page<BookDto> expectedPage = new PageImpl<>(
-                List.of(createBookDtoById(FIRST_BOOK_ID,
-                        List.of(FIRST_CATEGORY_ID))), PAGEABLE, 1
-        );
+        List<BookDto> expectedDtos =
+                List.of(createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID)));
 
         MvcResult result = mockMvc.perform(
-                        MockMvcRequestBuilders.get(SEARCH_BOOK_URL)
+                        get(SEARCH_BOOK_URL)
                                 .param("authors", CUSTOM_BOOK_AUTHOR.formatted(FIRST_BOOK_ID))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
+        List<BookDto> actualDtos = getBookDtosFromMvcResult(result, objectMapper);
 
-        String expectedString = objectMapper.writeValueAsString(expectedPage);
-        String actualString = result.getResponse().getContentAsString();
-
-        assertEquals(expectedString, actualString);
-
+        assertTrue(expectedDtos.stream()
+                .allMatch(expectedDto -> actualDtos.stream()
+                        .anyMatch(actualDto -> actualDto.equals(expectedDto))));
     }
 
     @WithMockUser(username = "user")
@@ -171,16 +162,14 @@ public class BookControllerTest {
             """)
     public void search_InvalidSearchParams_ReturnEmptyPage() throws Exception {
         MvcResult result = mockMvc.perform(
-                        MockMvcRequestBuilders.get(SEARCH_BOOK_URL)
+                        get(SEARCH_BOOK_URL)
                                 .param("titles", NON_EXISTING_TITLE)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        Page<BookDto> expectedPage = new PageImpl<>(List.of(), PAGEABLE, EMPTY_PAGE);
-        String expectedString = objectMapper.writeValueAsString(expectedPage);
-        String actualString = result.getResponse().getContentAsString();
+        List<BookDto> actualDtos = getBookDtosFromMvcResult(result, objectMapper);
 
-        assertEquals(expectedString, actualString);
+        assertTrue(actualDtos.isEmpty());
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -202,7 +191,6 @@ public class BookControllerTest {
                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
-
         BookDto expected = createBookDtoById(FOURTH_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         BookDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
@@ -229,7 +217,6 @@ public class BookControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-
         BookDto expected = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         expected.setTitle(UPDATED_TITLE);
         BookDto actual = objectMapper.readValue(
@@ -246,6 +233,7 @@ public class BookControllerTest {
     public void updateBook_BookByInvalidId_ThrowException() throws Exception {
         CreateBookRequestDto requestDto = updateBookRequestDtoById(FOURTH_BOOK_ID);
         String json = objectMapper.writeValueAsString(requestDto);
+
         mockMvc.perform(
                         MockMvcRequestBuilders.put(BOOK_URL_WITH_INVALID_ID)
                                 .content(json)

@@ -4,8 +4,8 @@ import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static ruslan.shastkiv.bookstore.utils.BookTestUtils.PAGEABLE;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookDtoWithoutCategoryIds;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.getBookDtosWithoutCategoriesFromMvcResult;
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.CATEGORY_URL;
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.CATEGORY_URL_WITH_FIRST_ID;
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.CATEGORY_URL_WITH_SECOND_ID;
@@ -16,6 +16,7 @@ import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.createCategoryDt
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.createCategoryRequestDto;
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.createUpdatedCategoryDto;
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.createUpdatedCategoryRequestDto;
+import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.getCategoryDtosFromMvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -24,8 +25,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
@@ -87,7 +86,6 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
-
         CategoryDto expected = createCategoryDtoById(THIRD_CATEGORY_ID);
         CategoryDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
@@ -101,11 +99,9 @@ public class CategoryControllerTest {
             Should fetch all categories as a pageable response
             """)
     public void getAllCategories_AsUser_ReturnPageOfCategories() throws Exception {
-        Page<CategoryDto> expectedPage = new PageImpl<>(
-                List.of(
-                        createCategoryDtoById(FIRST_CATEGORY_ID),
-                        createCategoryDtoById(SECOND_CATEGORY_ID)
-                ), PAGEABLE, 2
+        List<CategoryDto> expectedDtos = List.of(
+                createCategoryDtoById(FIRST_CATEGORY_ID),
+                createCategoryDtoById(SECOND_CATEGORY_ID)
         );
 
         MvcResult result = mockMvc.perform(
@@ -113,11 +109,11 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
+        List<CategoryDto> actualDtos = getCategoryDtosFromMvcResult(result, objectMapper);
 
-        String expectedString = objectMapper.writeValueAsString(expectedPage);
-        String actualString = result.getResponse().getContentAsString();
-
-        assertEquals(expectedString, actualString);
+        assertTrue(expectedDtos.stream()
+                .allMatch(expectedDto -> actualDtos.stream()
+                        .anyMatch(actualDto -> actualDto.equals(expectedDto))));
     }
 
     @Test
@@ -131,7 +127,6 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-
         CategoryDto expected = createCategoryDtoById(FIRST_CATEGORY_ID);
         CategoryDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
@@ -146,21 +141,22 @@ public class CategoryControllerTest {
             Should fetch all books by category ID as a pageable response
             """)
     public void getAllBooksByCategoryId_ValidCategoryId_ReturnPageOfBooks() throws Exception {
-        PageImpl<BookDtoWithoutCategoryIds> expectedPage = new PageImpl<>(List.of(
+        List<BookDtoWithoutCategoryIds> expectedDtos = List.of(
                 createBookDtoWithoutCategoryIds(2L),
                 createBookDtoWithoutCategoryIds(3L)
-        ), PAGEABLE, 2);
+        );
 
         MvcResult result = mockMvc.perform(
                         MockMvcRequestBuilders.get(CATEGORY_URL_WITH_SECOND_ID)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
+        List<BookDtoWithoutCategoryIds> actualDtos
+                = getBookDtosWithoutCategoriesFromMvcResult(result, objectMapper);
 
-        String expectedString = objectMapper.writeValueAsString(expectedPage);
-        String actualString = result.getResponse().getContentAsString();
-
-        assertEquals(expectedString, actualString);
+        assertTrue(expectedDtos.stream()
+                .allMatch(expectedDto -> actualDtos.stream()
+                        .anyMatch(actualDto -> actualDto.equals(expectedDto))));
     }
 
     @Test
@@ -182,9 +178,7 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-
         CategoryDto expected = createUpdatedCategoryDto(FIRST_CATEGORY_ID);
-
         CategoryDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
 

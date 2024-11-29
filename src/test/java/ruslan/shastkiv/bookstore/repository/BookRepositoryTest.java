@@ -1,5 +1,6 @@
 package ruslan.shastkiv.bookstore.repository;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -106,10 +107,13 @@ class BookRepositoryTest {
     void findAllWithCategories_getInitializedCategory_DoesNotThrowLazyInitializationException() {
         List<Book> allWithCategories = bookRepository.findAllWithCategories(PAGEABLE).getContent();
 
-        for (Book book : allWithCategories) {
-            assertDoesNotThrow(() -> {
-                book.getCategories().size();
-            }, "LazyInitializationException was thrown for book: " + book.getTitle());
-        }
+        assertAll(
+                allWithCategories.stream()
+                        .map(book -> () -> assertDoesNotThrow(
+                                () -> book.getCategories().size(),
+                                "LazyInitializationException was thrown for book: "
+                                        + book.getTitle()
+                        ))
+        );
     }
 }

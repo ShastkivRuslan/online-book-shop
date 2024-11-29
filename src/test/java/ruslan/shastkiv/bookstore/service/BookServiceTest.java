@@ -69,7 +69,6 @@ public class BookServiceTest {
         CreateBookRequestDto requestDto = createBookRequestDtoById(FIRST_BOOK_ID);
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         BookDto expectedBookDto = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-
         when(bookMapper.toModel(requestDto)).thenReturn(book);
         when(categoryRepository.findAllById(Set.of(FIRST_CATEGORY_ID)))
                 .thenReturn(List.of(createCategoryById(FIRST_CATEGORY_ID)));
@@ -89,11 +88,10 @@ public class BookServiceTest {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         Page<Book> bookPage = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE_1);
         BookDto bookDto = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-
         when(bookRepository.findAllWithCategories(PAGEABLE)).thenReturn(bookPage);
         when(bookMapper.toDto(book)).thenReturn(bookDto);
-
         Page<BookDto> expected = new PageImpl<>(List.of(bookDto), PAGEABLE, PAGE_SIZE_1);
+
         Page<BookDto> actual = bookService.getAll(PAGEABLE);
 
         assertEquals(expected, actual);
@@ -106,7 +104,6 @@ public class BookServiceTest {
     void getBookById_ValidId_ReturnBookDto() {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         BookDto expected = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-
         when(bookRepository.findById(FIRST_BOOK_ID)).thenReturn(Optional.of(book));
         when(bookMapper.toDto(book)).thenReturn(expected);
 
@@ -124,7 +121,6 @@ public class BookServiceTest {
 
         Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.getBookById(INVALID_BOOK_ID));
-
         verifyNoInteractions(bookMapper);
     }
 
@@ -134,9 +130,7 @@ public class BookServiceTest {
             """)
     void updateBook_ValidRequestDto_ReturnBookDto() {
         CreateBookRequestDto requestDto = updateBookRequestDtoById(FIRST_BOOK_ID);
-
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-
         when(bookRepository.findById(FIRST_BOOK_ID)).thenReturn(Optional.of(book));
 
         bookService.updateBook(FIRST_BOOK_ID, requestDto);
@@ -153,7 +147,6 @@ public class BookServiceTest {
         bookService.deleteBook(FIRST_BOOK_ID);
 
         verify(bookRepository).deleteById(FIRST_BOOK_ID);
-
         verifyNoMoreInteractions(bookRepository);
     }
 
@@ -163,20 +156,15 @@ public class BookServiceTest {
             """)
     void search_ValidSearchParameters_ReturnBookDtoPage() {
         BookSearchParametersDto searchParametersDto = createSearchParamsDto();
-
         Specification<Book> specification = (root, query, criteriaBuilder)
                 -> criteriaBuilder.equal(
                         root.get("title"), CUSTOM_BOOK_TITLE.formatted(FIRST_BOOK_ID));
-
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         Page<Book> books = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE_1);
-
         BookDto dto = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-
         when(bookMapper.toDto(book)).thenReturn(dto);
         when(specificationBuilder.build(searchParametersDto)).thenReturn(specification);
         when(bookRepository.findAll(specification, PAGEABLE)).thenReturn(books);
-
         Page<BookDto> expected = new PageImpl<>(List.of(dto), PAGEABLE, PAGE_SIZE_1);
         Page<BookDto> actual = bookService.search(searchParametersDto, PAGEABLE);
 
@@ -191,17 +179,14 @@ public class BookServiceTest {
     @DisplayName("Search books with no matching parameters should return empty page")
     void search_NoMatchingParameters_ShouldReturnEmptyPage() {
         BookSearchParametersDto searchParametersDto = createSearchParamsDto();
-
         Specification<Book> specification = (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("title"), NON_EXISTING_TITLE);
-
         when(specificationBuilder.build(searchParametersDto)).thenReturn(specification);
         when(bookRepository.findAll(specification, PAGEABLE)).thenReturn(Page.empty(PAGEABLE));
 
         Page<BookDto> actual = bookService.search(searchParametersDto, PAGEABLE);
 
         assertTrue(actual.isEmpty());
-
         verify(specificationBuilder).build(searchParametersDto);
         verify(bookRepository).findAll(specification, PAGEABLE);
         verifyNoMoreInteractions(specificationBuilder, bookRepository);
@@ -215,12 +200,10 @@ public class BookServiceTest {
     void getAllBooksByCategoryId_ValidCategoryId_ReturnBookDtoPage() {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         Page<Book> books = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE_1);
-
         BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds
                 = createBookDtoWithoutCategoryIds(FIRST_BOOK_ID);
         PageImpl<BookDtoWithoutCategoryIds> expectedPage
                 = new PageImpl<>(List.of(bookDtoWithoutCategoryIds), PAGEABLE, PAGE_SIZE_1);
-
         when(bookRepository.findBooksByCategoryId(FIRST_BOOK_ID, PAGEABLE)).thenReturn(books);
         when(bookMapper.toDtoWithoutCategoryIds(book)).thenReturn(bookDtoWithoutCategoryIds);
 
@@ -236,7 +219,6 @@ public class BookServiceTest {
             """)
     void getAllBooksByCategoryId_InvalidCategoryId_ReturnBookDtoPage() {
         Page<Book> books = new PageImpl<>(List.of(), PAGEABLE, EMPTY_PAGE);
-
         when(bookRepository.findBooksByCategoryId(INVALID_BOOK_ID, PAGEABLE)).thenReturn(books);
 
         Page<BookDtoWithoutCategoryIds> actualPage
@@ -251,7 +233,6 @@ public class BookServiceTest {
             """)
     void findBookById_ValidId_ReturnBook() {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-
         when(bookRepository.findById(FIRST_BOOK_ID)).thenReturn(Optional.of(book));
 
         Book actual = bookService.findBookById(FIRST_BOOK_ID);

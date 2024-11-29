@@ -2,12 +2,15 @@ package ruslan.shastkiv.bookstore.utils;
 
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.FIRST_CATEGORY_ID;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.web.servlet.MvcResult;
 import ruslan.shastkiv.bookstore.dto.book.BookDto;
 import ruslan.shastkiv.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
@@ -109,5 +112,23 @@ public class BookTestUtils {
                         .collect(Collectors.toSet())
         );
         return bookDto;
+    }
+
+    public static List<BookDto> getBookDtosFromMvcResult(
+            MvcResult result,
+            ObjectMapper objectMapper) throws Exception {
+        return objectMapper.convertValue(
+                objectMapper.readTree(result.getResponse().getContentAsString())
+                        .get("content"), new TypeReference<List<BookDto>>() {}
+        );
+    }
+
+    public static List<BookDtoWithoutCategoryIds> getBookDtosWithoutCategoriesFromMvcResult(
+            MvcResult result,
+            ObjectMapper objectMapper) throws Exception {
+        return objectMapper.convertValue(
+                objectMapper.readTree(result.getResponse().getContentAsString())
+                        .get("content"), new TypeReference<List<BookDtoWithoutCategoryIds>>() {}
+        );
     }
 }
