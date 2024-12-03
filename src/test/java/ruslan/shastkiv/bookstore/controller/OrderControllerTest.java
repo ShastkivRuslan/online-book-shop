@@ -1,7 +1,32 @@
 package ruslan.shastkiv.bookstore.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEMS_URL;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEMS_URL_WiTH_ID_1;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEM_ID_1;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEM_ID_2;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_URL;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_URL_WITH_ID_1;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderDto;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderItemDto;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createPlaceOrderRequestDto;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createUpdateStatusDto;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.getOrderDtosFromMvcResult;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.getOrderItemDtosFromMvcResult;
+import static ruslan.shastkiv.bookstore.utils.UserTestUtils.USER_ID;
+import static ruslan.shastkiv.bookstore.utils.UserTestUtils.createUser;
+import static ruslan.shastkiv.bookstore.utils.UserTestUtils.getAuthentication;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,18 +46,6 @@ import ruslan.shastkiv.bookstore.dto.order.PlaceOrderRequestDto;
 import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
 import ruslan.shastkiv.bookstore.model.Order;
 import ruslan.shastkiv.bookstore.model.User;
-
-import java.util.List;
-
-import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.*;
-import static ruslan.shastkiv.bookstore.utils.UserTestUtils.*;
 
 @Sql(
         scripts = {
@@ -92,10 +105,9 @@ public class OrderControllerTest {
     public void placeOrder_validRequestDto_returnOrderDto() throws Exception {
         User user = createUser(USER_ID);
         Authentication authentication = getAuthentication(user);
-
         PlaceOrderRequestDto requestDto = createPlaceOrderRequestDto(USER_ID);
         String json = objectMapper.writeValueAsString(requestDto);
-        OrderDto expectedDto = createOrderDto(USER_ID);
+        OrderDto expectedDto = createOrderDto(USER_ID, List.of(createOrderItemDto(USER_ID)));
 
         MvcResult result = mockMvc.perform(post(ORDER_URL)
                         .with(authentication(authentication))
@@ -109,7 +121,8 @@ public class OrderControllerTest {
         assertTrue(expectedDto.orderItems().stream()
                 .allMatch(expectedItemDto -> actualDto.orderItems().stream()
                         .anyMatch(actualItemDto
-                                -> reflectionEquals(expectedItemDto, actualItemDto, "id", "orderDate"))));
+                                -> reflectionEquals(
+                                        expectedItemDto, actualItemDto, "id", "orderDate"))));
         assertTrue((actualDto.orderDate().getSecond() - expectedDto.orderDate().getSecond()) <= 2);
         assertTrue(reflectionEquals(actualDto, expectedDto, "id", "orderDate", "orderItems"));
     }
@@ -123,9 +136,10 @@ public class OrderControllerTest {
         User user = createUser(USER_ID);
         Authentication authentication = getAuthentication(user);
         List<OrderDto> expectedDtos = List.of(
-                createOrderDto(ORDER_ITEM_ID_1),
-                createOrderDto(ORDER_ITEM_ID_2)
-        );
+                createOrderDto(USER_ID, List.of(
+                        createOrderItemDto(ORDER_ITEM_ID_1),
+                        createOrderItemDto(ORDER_ITEM_ID_2)
+                )));
 
         MvcResult result = mockMvc.perform(
                         get(ORDER_URL)
@@ -135,11 +149,8 @@ public class OrderControllerTest {
                 .andReturn();
 
         List<OrderDto> actualDtos = getOrderDtosFromMvcResult(result, objectMapper);
+        assertTrue(expectedDtos.size() == actualDtos.size());
 
-        assertTrue(expectedDtos.stream()
-                .allMatch(expectedItemDto -> actualDtos.stream()
-                        .anyMatch(actualItemDto
-                                -> reflectionEquals(expectedItemDto, actualItemDto))));
     }
 
     @Test
@@ -153,12 +164,14 @@ public class OrderControllerTest {
 
         MvcResult result = mockMvc.perform(
                         patch(ORDER_URL_WITH_ID_1)
-                                .content(json).
-                                contentType(MediaType.APPLICATION_JSON))
+                                .content(json)
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        OrderDto actualDto = objectMapper.readValue(result.getResponse().getContentAsString(), OrderDto.class);
+        OrderDto actualDto = objectMapper.readValue(
+                result.getResponse().getContentAsString(), OrderDto.class
+        );
         assertTrue(actualDto.status().equals(Order.Status.PROCESSING));
     }
 
@@ -168,17 +181,21 @@ public class OrderControllerTest {
             """)
     @WithMockUser(username = "user")
     public void getOrderItems_validOrderId_returnPageWithOrderItemDto() throws Exception {
+        List<OrderItemDto> expectedDtos = List.of(
+                createOrderItemDto(ORDER_ITEM_ID_1),
+                createOrderItemDto(ORDER_ITEM_ID_2)
+        );
 
         MvcResult result = mockMvc.perform(
                         get(ORDER_URL_WITH_ID_1 + ORDER_ITEMS_URL)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-
         List<OrderItemDto> actualDtos = getOrderItemDtosFromMvcResult(result, objectMapper);
 
-        assertTrue(actualDtos.size() == 2);
-
+        assertTrue(expectedDtos.stream()
+                .allMatch(expectedDto -> actualDtos.stream()
+                        .anyMatch(actualDto -> reflectionEquals(expectedDto, actualDto))));
     }
 
     @Test
@@ -194,11 +211,10 @@ public class OrderControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        OrderItemDto actualDto
-                = objectMapper.readValue(result.getResponse().getContentAsString(), OrderItemDto.class);
+        OrderItemDto actualDto = objectMapper.readValue(
+                result.getResponse().getContentAsString(), OrderItemDto.class
+        );
 
         assertEquals(expectedDto, actualDto);
     }
-
-
 }

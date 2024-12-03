@@ -1,19 +1,18 @@
 package ruslan.shastkiv.bookstore.utils;
 
+import static ruslan.shastkiv.bookstore.utils.UserTestUtils.CUSTOM_SHIPPING_ADDRESS;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.test.web.servlet.MvcResult;;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import org.springframework.test.web.servlet.MvcResult;
 import ruslan.shastkiv.bookstore.dto.order.OrderDto;
 import ruslan.shastkiv.bookstore.dto.order.OrderItemDto;
 import ruslan.shastkiv.bookstore.dto.order.PlaceOrderRequestDto;
 import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
 import ruslan.shastkiv.bookstore.model.Order;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static ruslan.shastkiv.bookstore.utils.UserTestUtils.CUSTOM_SHIPPING_ADDRESS;
 /*
 NOTE!!!
 in DB we have 2 test users with id 2 and 3
@@ -46,11 +45,11 @@ public class OrderTestUtils {
         );
     }
 
-    public static OrderDto createOrderDto(Long id) {
+    public static OrderDto createOrderDto(Long id, List<OrderItemDto> items) {
         return new OrderDto(
                 id,
                 id,
-                List.of(createOrderItemDto(id)),
+                items,
                 LocalDateTime.now(),
                 BigDecimal.valueOf(9L),
                 Order.Status.PENDING);
