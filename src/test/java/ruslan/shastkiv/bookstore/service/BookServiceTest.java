@@ -63,7 +63,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Create a book with valid request and return corresponding BookDto
+            createBook()
+            - should return a BookDto when creating a book with valid request
             """)
     void createBook_ValidCreateBookDto_ReturnBookDto() {
         CreateBookRequestDto requestDto = createBookRequestDtoById(FIRST_BOOK_ID);
@@ -82,7 +83,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Retrieve all books as a paginated response with valid BookDto
+            getAll()
+            - should return a paginated BookDto response with all books
             """)
     void getAll_ValidPage_ReturnPageWithBookDto() {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
@@ -99,7 +101,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Retrieve a book by ID and return corresponding BookDto
+            getBookById()
+            - should return the corresponding BookDto when provided a valid ID
             """)
     void getBookById_ValidId_ReturnBookDto() {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
@@ -114,7 +117,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Attempt to retrieve a book by invalid ID should throw EntityNotFoundException
+            getBookById()
+            - should throw EntityNotFoundException when the provided ID is invalid
             """)
     void getBookById_InvalidId_ThrowException() {
         when(bookRepository.findById(INVALID_BOOK_ID)).thenThrow(EntityNotFoundException.class);
@@ -126,7 +130,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Update an existing book with valid request and return updated BookDto
+            updateBook()
+            - should update and return the updated BookDto with a valid request
             """)
     void updateBook_ValidRequestDto_ReturnBookDto() {
         CreateBookRequestDto requestDto = updateBookRequestDtoById(FIRST_BOOK_ID);
@@ -141,7 +146,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Delete a book by ID and verify deletion
+            deleteBook()
+            - should verify deletion of a book with a valid ID
             """)
     void deleteBook_ValidId_VerifyDeletion() {
         bookService.deleteBook(FIRST_BOOK_ID);
@@ -152,7 +158,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Search books with valid search parameters and return paginated BookDto
+            search()
+            - should return a paginated BookDto response with valid search parameters
             """)
     void search_ValidSearchParameters_ReturnBookDtoPage() {
         BookSearchParametersDto searchParametersDto = createSearchParamsDto();
@@ -176,7 +183,10 @@ public class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Search books with no matching parameters should return empty page")
+    @DisplayName("""
+            search()
+            - should return an empty page when no books match the search parameters
+            """)
     void search_NoMatchingParameters_ShouldReturnEmptyPage() {
         BookSearchParametersDto searchParametersDto = createSearchParamsDto();
         Specification<Book> specification = (root, query, criteriaBuilder) ->
@@ -195,7 +205,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Get all books by category ID and return corresponding BookDto without category IDs
+            getAllBooksByCategoryId()
+            - should return a paginated BookDto response for valid category ID
             """)
     void getAllBooksByCategoryId_ValidCategoryId_ReturnBookDtoPage() {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
@@ -215,7 +226,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Get all books by invalid category ID and return empty page
+            getAllBooksByCategoryId()
+            - should get all books by invalid category ID and return empty page
             """)
     void getAllBooksByCategoryId_InvalidCategoryId_ReturnBookDtoPage() {
         Page<Book> books = new PageImpl<>(List.of(), PAGEABLE, EMPTY_PAGE);
@@ -229,7 +241,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Find a book by ID and return the corresponding Book object
+            findBookById()
+            - should find a book by ID and return the corresponding Book object
             """)
     void findBookById_ValidId_ReturnBook() {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
@@ -242,7 +255,8 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("""
-            Throw EntityNotFoundException when book ID does not exist
+            findBookById()
+            - should throw EntityNotFoundException when book ID does not exist
             """)
     void findBookById_InvalidId_ThrowException() {
         when(bookRepository.findById(INVALID_BOOK_ID)).thenReturn(Optional.empty());

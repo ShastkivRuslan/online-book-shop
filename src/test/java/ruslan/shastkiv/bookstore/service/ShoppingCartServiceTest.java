@@ -12,7 +12,7 @@ import static ruslan.shastkiv.bookstore.utils.BookTestUtils.FIRST_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookById;
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.FIRST_CATEGORY_ID;
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.ONE_INVOCATION;
-import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.ITEM_ID;
+import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.ITEM_ID_3;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.UPDATED_QUANTITY;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createCart;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createCartItem;
@@ -62,7 +62,8 @@ public class ShoppingCartServiceTest {
 
     @Test
     @DisplayName("""
-            Should create a shopping cart for the user
+            createShoppingCart()
+            - Should create a shopping cart for the user
             """)
     public void createShoppingCart_validUser_saveShoppingCart() {
         User user = createUser(USER_ID);
@@ -77,7 +78,8 @@ public class ShoppingCartServiceTest {
 
     @Test
     @DisplayName("""
-            Should retrieve the shopping cart by its ID
+            getShoppingCart()
+            - Should retrieve the shopping cart by its ID
             """)
     public void getShoppingCart_validId_returnShoppingCartDto() {
         User user = createUser(USER_ID);
@@ -93,7 +95,8 @@ public class ShoppingCartServiceTest {
 
     @Test
     @DisplayName("""
-            Should add a book to the shopping cart and return ShoppingCartDto
+            addBookToCart()
+            - Should add a book to the shopping cart and return ShoppingCartDto
             """)
     public void addBookToCart_validRequest_returnShoppingCartDto() {
         User user = createUser(USER_ID);
@@ -119,7 +122,8 @@ public class ShoppingCartServiceTest {
 
     @Test
     @DisplayName("""
-            Should remove an item from the shopping cart
+            removeCartItem()
+            - Should remove an item from the shopping cart
             """)
     public void removeCartItem_validRequest_removeItemFromCart() {
         ShoppingCart cart = createCart(USER_ID, createUser(USER_ID), Set.of());
@@ -135,21 +139,22 @@ public class ShoppingCartServiceTest {
 
     @Test
     @DisplayName("""
-            Should update the quantity of an item in the shopping cart and return ShoppingCartDto
+            updateItemQuantity()
+            - Should update the quantity of an item in the shopping cart and return ShoppingCartDto
             """)
     public void updateItemQuantity_validRequest_returnShoppingCartDto() {
         ShoppingCart cart = createCart(USER_ID, createUser(USER_ID), Set.of());
-        CartItem cartItem = createCartItem(ITEM_ID, cart);
+        CartItem cartItem = createCartItem(ITEM_ID_3, cart);
         cart.setCartItems(Set.of(cartItem));
-        ShoppingCartDto expectedDto = createShoppingCartDto(USER_ID, List.of(ITEM_ID));
-        when(cartItemRepository.findByIdAndShoppingCartId(ITEM_ID, USER_ID))
+        ShoppingCartDto expectedDto = createShoppingCartDto(USER_ID, List.of(ITEM_ID_3));
+        when(cartItemRepository.findByIdAndShoppingCartId(ITEM_ID_3, USER_ID))
                 .thenReturn(Optional.of(cartItem));
         when(shoppingCartMapper.toDto(any(ShoppingCart.class))).thenReturn(expectedDto);
         when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(cart);
 
         ShoppingCartDto actualDto = shoppingCartService.updateItemQuantity(
                 USER_ID,
-                ITEM_ID,
+                ITEM_ID_3,
                 createUpdateCartItemDto(UPDATED_QUANTITY)
         );
 
@@ -158,7 +163,8 @@ public class ShoppingCartServiceTest {
 
     @Test
     @DisplayName("""
-            Should retrieve the shopping cart by its ID for a valid request
+            findShoppingCart()
+            - Should retrieve the shopping cart by its ID for a valid request
             """)
     public void findShoppingCart_validRequest_returnShoppingCartDto() {
         ShoppingCart expectedCart = createCart(USER_ID, createUser(USER_ID), Set.of());
@@ -171,7 +177,8 @@ public class ShoppingCartServiceTest {
 
     @Test
     @DisplayName("""
-            Should throw EntityNotFoundException for an invalid shopping cart ID
+            findShoppingCart()
+            - Should throw EntityNotFoundException for an invalid shopping cart ID
             """)
     public void findShoppingCart_invalidRequest_throwException() {
         when(shoppingCartRepository.findById(INVALID_USER_ID)).thenReturn(Optional.empty());
@@ -183,7 +190,8 @@ public class ShoppingCartServiceTest {
 
     @Test
     @DisplayName("""
-            Should clear the shopping cart and save it
+            clearShoppingCart()
+            - Should clear the shopping cart and save it
             """)
     public void clearShoppingCart_validRequest_saveClearedCart() {
         ShoppingCart cart = createCart(USER_ID, createUser(USER_ID), new HashSet<>());

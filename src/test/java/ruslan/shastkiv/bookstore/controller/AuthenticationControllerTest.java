@@ -64,7 +64,8 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("""
-            Should register new user and return user dto
+            register()
+            - Should register new user and return user dto
             """)
     @Sql(
             scripts = {
@@ -91,7 +92,8 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("""
-            Should login user with valid loginDto and return token
+            login()
+            - Should login user with valid loginDto and return token
             """)
     @Sql(
             scripts = "classpath:scripts/user/set_encoded_password.sql",

@@ -13,7 +13,6 @@ import ruslan.shastkiv.bookstore.model.Role;
 import ruslan.shastkiv.bookstore.model.User;
 
 public class UserTestUtils {
-    public static final Long ADMIN_ID = 2L;
     public static final Long USER_ID = 3L;
     public static final Long NEW_USER_ID = 4L;
     public static final Long INVALID_USER_ID = 101L;
@@ -31,6 +30,9 @@ public class UserTestUtils {
 
     public static final String ENCODED_PASSWORD
             = "$2a$10$HflRLW4gX0Ja.DLLFD3H1.fpAdzU5tFk8C/ybW4td4Ha/01zi1QdW";
+    public static final String JWT_TOKEN_EXAMPLE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+            + ".eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNjkxMTUwMDAwLCJleHAiOjE2OTExNTM2"
+            + "MDB9._6x7FS8wbDF-KVb_dUpHLq5Ww4kgEEHCMdH8pUZTbqM";
 
     public static User createUser(Long id) {
         User user = new User();

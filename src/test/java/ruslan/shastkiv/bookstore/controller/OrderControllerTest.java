@@ -91,7 +91,8 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("""
-            Should place an order and return Order Dto
+            placeOrder()
+            - Should place an order and return Order Dto
             """)
     @WithMockUser(username = "user")
     @Sql(
@@ -130,7 +131,8 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("""
-            Should retrieve all orders by authenticated user
+            getOrders()
+            - Should retrieve all orders by authenticated user
             """)
     @WithMockUser(username = "user")
     public void getOrders_validUser_returnPageOrderDto() throws Exception {
@@ -156,7 +158,8 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("""
-            Should update order status by its id and return Order Dto
+            updateOrderStatus()
+            - Should update order status by its id and return Order Dto
             """)
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void updateOrderStatus_validRequestDto_returnUpdatedOrderDto() throws Exception {
@@ -178,7 +181,8 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("""
-            Should return page with OrderItemDto`s
+            getOrderItems()
+            - Should return page with OrderItemDto`s
             """)
     @WithMockUser(username = "user")
     public void getOrderItems_validOrderId_returnPageWithOrderItemDto() throws Exception {
@@ -201,7 +205,8 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("""
-            Should return valid OrderItemDto
+            getOrderItem()
+            - Should return valid OrderItemDto
             """)
     @WithMockUser(username = "user")
     public void getOrderItem_validIds_returnOrderItemDto() throws Exception {

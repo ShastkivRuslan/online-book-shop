@@ -19,7 +19,8 @@ public class ShoppingCartTestUtils {
     public static final String ITEM_URL = "/cart/items/";
     public static final int ITEM_ID_FOR_DELETE = 3;
     public static final int UPDATED_QUANTITY = 20;
-    public static final Long ITEM_ID = 3L;
+    public static final Long ITEM_ID_3 = 3L;
+    public static final Long INVALID_ITEM_ID = 100L;
 
     public static CartItemDto createCartItemDto(Long id) {
         return new CartItemDto(id,

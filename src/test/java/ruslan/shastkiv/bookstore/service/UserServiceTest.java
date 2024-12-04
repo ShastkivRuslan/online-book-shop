@@ -53,7 +53,8 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("""
-            Register a user with valid request
+            register()
+            - Should register a user with valid request
             """)
     public void register_validRequestDto_returnUserDto() {
         User user = createUser(USER_ID);
@@ -76,7 +77,8 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("""
-            Register already registered email
+            register()
+            - Should throw RegistrationException for an already registered email
             """)
     public void register_registeredEmail_throwsException() {
         UserRegistrationRequestDto userRegisterDto = createUserRegisterDto(USER_ID);
@@ -88,7 +90,8 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("""
-            Retrieve user ID from Authentication object
+            getUserId()
+            - Should retrieve user ID from Authentication object
             """)
     public void getUserId_fromAuthentication_returnUserId() {
         User user = createUser(USER_ID);

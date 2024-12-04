@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.SECOND_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.THIRD_BOOK_ID;
-import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.ITEM_ID;
+import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.ITEM_ID_3;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.ITEM_ID_FOR_DELETE;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.ITEM_URL;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.SHOPPING_CART_URL;
@@ -62,7 +62,6 @@ import ruslan.shastkiv.bookstore.model.User;
                 "classpath:scripts/cart/remove_shopping_cart.sql",
                 "classpath:scripts/user/remove_users_roles.sql",
                 "classpath:scripts/user/remove_users.sql"
-
         },
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS
 )
@@ -85,7 +84,8 @@ public class ShoppingCartControllerTest {
 
     @Test
     @DisplayName("""
-            Should return a shopping cart DTO
+            getShoppingCart()
+            - Should return a shopping cart DTO
             """)
     @WithMockUser(username = "user")
     public void getShoppingCart_validUser_returnShoppingCartDto() throws Exception {
@@ -107,7 +107,8 @@ public class ShoppingCartControllerTest {
 
     @Test
     @DisplayName("""
-            Should add a book to shopping cart and return a shopping cart DTO
+            addBook()
+            - Should add a book to shopping cart and return a shopping cart DTO
             """)
     @WithMockUser(username = "user")
     @Sql(
@@ -141,7 +142,8 @@ public class ShoppingCartControllerTest {
     @Test
     @WithMockUser(username = "user")
     @DisplayName("""
-            Should update quantity of books and return updated shopping cart Dto
+            updateQuantity()
+            - Should update quantity of books and return updated shopping cart Dto
             """)
     @Sql(
             scripts = "classpath:scripts/cart/revert_updated_quantity.sql",
@@ -153,7 +155,7 @@ public class ShoppingCartControllerTest {
         UpdateCartItemRequestDto updateCartItemDro = createUpdateCartItemDto(UPDATED_QUANTITY);
         String json = objectMapper.writeValueAsString(updateCartItemDro);
         ShoppingCartDto expectedDto
-                = createUpdatedShoppingCartDto(USER_ID, ITEM_ID, UPDATED_QUANTITY);
+                = createUpdatedShoppingCartDto(USER_ID, ITEM_ID_3, UPDATED_QUANTITY);
 
         MvcResult result = mockMvc.perform(put(ITEM_URL + USER_ID.intValue())
                         .with(authentication(authentication))
@@ -170,7 +172,8 @@ public class ShoppingCartControllerTest {
 
     @Test
     @DisplayName("""
-            Should delete book from shopping cart and return no content status
+            removeBookFromCart()
+            - Should delete book from shopping cart and return no content status
             """)
     @WithMockUser(username = "user")
     @Sql(

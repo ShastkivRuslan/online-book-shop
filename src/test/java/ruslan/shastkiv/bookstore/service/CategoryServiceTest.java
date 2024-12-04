@@ -49,7 +49,10 @@ public class CategoryServiceTest {
     private CategoryRepository categoryRepository;
 
     @Test
-    @DisplayName("Should add a new category and return its DTO")
+    @DisplayName("""
+            addCategory()
+            - Should add a new category and return its DTO
+            """)
     public void addCategory_GivenValidRequestDto_ReturnCategoryDto() {
         CategoryRequestDto requestDto = createCategoryRequestDto(FIRST_CATEGORY_ID);
         Category category = createCategoryById(FIRST_CATEGORY_ID);
@@ -65,7 +68,8 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should retrieve all categories as a pageable response
+            getAllCategories()
+            - Should retrieve all categories as a pageable response
             """)
     public void getAllCategories_WhenCategoriesExist_ReturnPageOfCategoryDtos() {
         Category firstCategory = createCategoryById(FIRST_CATEGORY_ID);
@@ -94,7 +98,8 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should retrieve a category by its ID and return its DTO
+            getCategoryById()
+            - Should retrieve a category by its ID and return its DTO
             """)
     public void getCategoryById_GivenValidId_ReturnCategoryDto() {
         Category category = createCategoryById(FIRST_CATEGORY_ID);
@@ -111,7 +116,8 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should throw EntityNotFoundException for an invalid category ID
+            getCategoryById()
+            - Should throw EntityNotFoundException for an invalid category ID
             """)
     public void getCategoryById_GivenInvalidId_ThrowEntityNotFoundException() {
         when(categoryRepository.findById(NON_EXISTED_CATEGORY_ID)).thenReturn(Optional.empty());
@@ -123,7 +129,8 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should update an existing category and return updated DTO
+            updateCategory()
+            - Should update an existing category and return updated DTO
             """)
     public void updateCategory_GivenValidIdAndRequestDto_ReturnUpdatedCategoryDto() {
         Category category = createCategoryById(FIRST_CATEGORY_ID);
@@ -146,7 +153,8 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should throw EntityNotFoundException when updating non-existent category
+            updateCategory()
+            - Should throw EntityNotFoundException when updating non-existent category
             """)
     public void updateCategory_GivenInvalidId_ThrowEntityNotFoundException() {
         assertThrows(EntityNotFoundException.class,
@@ -159,7 +167,8 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should delete a category by its ID
+            deleteCategory()
+            - Should delete a category by its ID
             """)
     public void deleteCategory_GivenValidId_DeleteCategory() {
         categoryService.deleteCategory(FIRST_CATEGORY_ID);

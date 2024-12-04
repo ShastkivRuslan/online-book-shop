@@ -70,7 +70,8 @@ public class OrderServiceTest {
 
     @Test
     @DisplayName("""
-            Should place an order by user ID and return OrderDto
+            placeOrderByUserId()
+            - Should place an order by user ID and return OrderDto
             """)
     public void placeOrderByUserId_validRequest_returnOrderDto() {
         User user = createUser(USER_ID);
@@ -100,7 +101,8 @@ public class OrderServiceTest {
 
     @Test
     @DisplayName("""
-            Get all orders by user ID
+            getAllOrdersByUserId()
+            - Should get all orders by user ID
             """)
     public void getAllOrdersByUserId_validRequest_returnPageableOrderDto() {
         OrderItemDto orderItemDto = createOrderItemDto(ORDER_ITEM_ID_1);
@@ -120,7 +122,8 @@ public class OrderServiceTest {
 
     @Test
     @DisplayName("""
-            Update order status
+            updateOrderStatus()
+            - Should update order status
             """)
     public void updateOrderStatus_validRequest_returnOrderDto() {
         Order order = createOrder(createUser(USER_ID), List.of());
@@ -138,7 +141,8 @@ public class OrderServiceTest {
 
     @Test
     @DisplayName("""
-            Get order items by order ID
+            getOrderItemsByOrderId()
+            - Should get order items by order ID
             """)
     public void getOrderItemsByOrderId_validRequest_returnPageableOrderItemDto() {
         Order order = createOrder(createUser(USER_ID), new ArrayList<>());
@@ -159,7 +163,8 @@ public class OrderServiceTest {
 
     @Test
     @DisplayName("""
-            Get order item by ID
+            getOrderItem()
+            - Should get order item by ID
             """)
     public void getOrderItem_validRequest_returnOrderItemDto() {
         OrderItemDto orderItemDto = createOrderItemDto(ORDER_ITEM_ID_1);

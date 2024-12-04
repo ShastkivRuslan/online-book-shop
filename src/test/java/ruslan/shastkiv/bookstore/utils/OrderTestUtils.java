@@ -33,8 +33,10 @@ public class OrderTestUtils {
     public static final String ORDER_ITEMS_URL_WiTH_ID_1 = "/items/1";
 
     public static final Long ORDER_ID_1 = 1L;
+    public static final Long NOT_EXISTED_ORDER_ID = 100L;
     public static final Long ORDER_ITEM_ID_1 = 1L;
     public static final Long ORDER_ITEM_ID_2 = 2L;
+    public static final Long NOT_EXISTED_ORDER_ITEM_ID = 100L;
 
     public static PlaceOrderRequestDto createPlaceOrderRequestDto(Long userId) {
         return new PlaceOrderRequestDto(
