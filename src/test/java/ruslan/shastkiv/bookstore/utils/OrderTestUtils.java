@@ -1,5 +1,7 @@
 package ruslan.shastkiv.bookstore.utils;
 
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookById;
+import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.FIRST_CATEGORY_ID;
 import static ruslan.shastkiv.bookstore.utils.UserTestUtils.CUSTOM_SHIPPING_ADDRESS;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -12,7 +14,10 @@ import ruslan.shastkiv.bookstore.dto.order.OrderDto;
 import ruslan.shastkiv.bookstore.dto.order.OrderItemDto;
 import ruslan.shastkiv.bookstore.dto.order.PlaceOrderRequestDto;
 import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
+import ruslan.shastkiv.bookstore.model.Book;
 import ruslan.shastkiv.bookstore.model.Order;
+import ruslan.shastkiv.bookstore.model.OrderItem;
+import ruslan.shastkiv.bookstore.model.User;
 /*
 NOTE!!!
 in DB we have 2 test users with id 2 and 3
@@ -45,14 +50,14 @@ public class OrderTestUtils {
         );
     }
 
-    public static OrderDto createOrderDto(Long id, List<OrderItemDto> items) {
+    public static OrderDto createOrderDto(Long id, List<OrderItemDto> items, Order.Status status) {
         return new OrderDto(
                 id,
                 id,
                 items,
                 LocalDateTime.now(),
                 BigDecimal.valueOf(9L),
-                Order.Status.PENDING);
+                status);
     }
 
     public static List<OrderDto> getOrderDtosFromMvcResult(
@@ -75,5 +80,32 @@ public class OrderTestUtils {
 
     public static UpdateOrderStatusRequestDto createUpdateStatusDto(Order.Status status) {
         return new UpdateOrderStatusRequestDto(status);
+    }
+
+    public static Order createOrder(User user, List<OrderItem> orderItems) {
+        Order order = new Order();
+        order.setId(user.getId());
+        order.setUser(user);
+        order.setStatus(Order.Status.PENDING);
+        order.setOrderDate(LocalDateTime.now());
+        order.setShippingAddress(CUSTOM_SHIPPING_ADDRESS.formatted(user.getId()));
+        order.setTotal(
+                orderItems.stream()
+                        .map(orderItem -> orderItem.getPrice()
+                                .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)
+        );
+        return order;
+    }
+
+    public static OrderItem createOrderItem(Order order, Long bookId) {
+        Book book = createBookById(bookId, List.of(FIRST_CATEGORY_ID));
+        OrderItem orderItem = new OrderItem();
+        orderItem.setId(order.getId());
+        orderItem.setBook(book);
+        orderItem.setQuantity(book.getId().intValue());
+        orderItem.setPrice(book.getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())));
+        return orderItem;
+
     }
 }

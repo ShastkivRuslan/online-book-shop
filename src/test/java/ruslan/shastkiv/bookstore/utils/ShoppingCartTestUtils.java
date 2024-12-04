@@ -1,6 +1,7 @@
 package ruslan.shastkiv.bookstore.utils;
 
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.CUSTOM_BOOK_TITLE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookById;
 
 import java.util.List;
 import java.util.Set;
@@ -9,6 +10,9 @@ import ruslan.shastkiv.bookstore.dto.cart.ShoppingCartDto;
 import ruslan.shastkiv.bookstore.dto.item.CartItemDto;
 import ruslan.shastkiv.bookstore.dto.item.CartItemRequestDto;
 import ruslan.shastkiv.bookstore.dto.item.UpdateCartItemRequestDto;
+import ruslan.shastkiv.bookstore.model.CartItem;
+import ruslan.shastkiv.bookstore.model.ShoppingCart;
+import ruslan.shastkiv.bookstore.model.User;
 
 public class ShoppingCartTestUtils {
     public static final String SHOPPING_CART_URL = "/cart";
@@ -22,6 +26,23 @@ public class ShoppingCartTestUtils {
                 id,
                 CUSTOM_BOOK_TITLE.formatted(id),
                 id.intValue());
+    }
+
+    public static CartItem createCartItem(Long id, ShoppingCart cart) {
+        CartItem cartItem = new CartItem();
+        cartItem.setId(id);
+        cartItem.setShoppingCart(cart);
+        cartItem.setBook(createBookById(id, List.of()));
+        cartItem.setQuantity(id.intValue());
+        return cartItem;
+    }
+
+    public static ShoppingCart createCart(Long cartId, User user, Set<CartItem> items) {
+        ShoppingCart cart = new ShoppingCart();
+        cart.setId(cartId);
+        cart.setUser(user);
+        cart.setCartItems(items);
+        return cart;
     }
 
     public static ShoppingCartDto createShoppingCartDto(Long userId, List<Long> cartItemIds) {

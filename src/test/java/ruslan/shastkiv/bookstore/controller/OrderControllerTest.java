@@ -107,7 +107,8 @@ public class OrderControllerTest {
         Authentication authentication = getAuthentication(user);
         PlaceOrderRequestDto requestDto = createPlaceOrderRequestDto(USER_ID);
         String json = objectMapper.writeValueAsString(requestDto);
-        OrderDto expectedDto = createOrderDto(USER_ID, List.of(createOrderItemDto(USER_ID)));
+        OrderDto expectedDto = createOrderDto(USER_ID, List.of(
+                createOrderItemDto(USER_ID)), Order.Status.PENDING);
 
         MvcResult result = mockMvc.perform(post(ORDER_URL)
                         .with(authentication(authentication))
@@ -139,7 +140,7 @@ public class OrderControllerTest {
                 createOrderDto(USER_ID, List.of(
                         createOrderItemDto(ORDER_ITEM_ID_1),
                         createOrderItemDto(ORDER_ITEM_ID_2)
-                )));
+                ), Order.Status.PENDING));
 
         MvcResult result = mockMvc.perform(
                         get(ORDER_URL)

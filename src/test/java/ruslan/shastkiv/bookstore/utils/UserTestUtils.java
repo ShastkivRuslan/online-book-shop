@@ -9,12 +9,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import ruslan.shastkiv.bookstore.dto.user.UserDto;
 import ruslan.shastkiv.bookstore.dto.user.UserLoginRequestDto;
 import ruslan.shastkiv.bookstore.dto.user.UserRegistrationRequestDto;
+import ruslan.shastkiv.bookstore.model.Role;
 import ruslan.shastkiv.bookstore.model.User;
 
 public class UserTestUtils {
     public static final Long ADMIN_ID = 2L;
     public static final Long USER_ID = 3L;
     public static final Long NEW_USER_ID = 4L;
+    public static final Long INVALID_USER_ID = 101L;
+    public static final Long ROLE_USER_ID = 2L;
 
     public static final String AUTH_URL = "/auth";
     public static final String REGISTER_URL = "/registration";
@@ -25,6 +28,9 @@ public class UserTestUtils {
     public static final String CUSTOM_EMAIL = "user_email_%s@mail.com";
     public static final String CUSTOM_PASSWORD = "Password_%s";
     public static final String CUSTOM_SHIPPING_ADDRESS = "Shipping_address_%s";
+
+    public static final String ENCODED_PASSWORD
+            = "$2a$10$HflRLW4gX0Ja.DLLFD3H1.fpAdzU5tFk8C/ybW4td4Ha/01zi1QdW";
 
     public static User createUser(Long id) {
         User user = new User();
@@ -71,5 +77,12 @@ public class UserTestUtils {
 
         return new UsernamePasswordAuthenticationToken(
                 user, user.getPassword(), authorities);
+    }
+
+    public static Role createRole(Long id) {
+        Role role = new Role();
+        role.setId(id);
+        role.setRoleName(Role.RoleName.ROLE_USER);
+        return role;
     }
 }
