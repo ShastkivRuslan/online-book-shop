@@ -1,6 +1,5 @@
 package ruslan.shastkiv.bookstore.service;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -96,7 +96,7 @@ public class OrderServiceTest {
                 authentication, createPlaceOrderRequestDto(USER_ID));
 
         verify(shoppingCartService, times(ONE_INVOCATION)).clearShoppingCart(cart);
-        assertEquals(expectedDto, actualDto);
+        Assertions.assertEquals(expectedDto, actualDto);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class OrderServiceTest {
         when(orderRepository.findAllByUserId(USER_ID, PAGEABLE)).thenReturn(orderPage);
         Page<OrderDto> actualPage = orderService.getAllOrdersByUserId(USER_ID, PAGEABLE);
 
-        assertEquals(expectedPage, actualPage);
+        Assertions.assertEquals(expectedPage, actualPage);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class OrderServiceTest {
         OrderDto actualDto = orderService.updateOrderStatus(
                 ORDER_ID_1, createUpdateStatusDto(Order.Status.PROCESSING));
 
-        assertEquals(expectedDto, actualDto);
+        Assertions.assertEquals(expectedDto, actualDto);
     }
 
     @Test
@@ -158,7 +158,7 @@ public class OrderServiceTest {
         when(orderItemMapper.toDto(any(OrderItem.class))).thenReturn(orderItemDto);
         Page<OrderItemDto> actualPage = orderService.getOrderItemsByOrderId(ORDER_ID_1, PAGEABLE);
 
-        assertEquals(expectedPage, actualPage);
+        Assertions.assertEquals(expectedPage, actualPage);
     }
 
     @Test
@@ -178,6 +178,6 @@ public class OrderServiceTest {
 
         OrderItemDto actualDto = orderService.getOrderItem(ORDER_ID_1, ORDER_ITEM_ID_1);
 
-        assertEquals(orderItemDto, actualDto);
+        Assertions.assertEquals(orderItemDto, actualDto);
     }
 }

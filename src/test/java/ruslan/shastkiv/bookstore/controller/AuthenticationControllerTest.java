@@ -1,7 +1,5 @@
 package ruslan.shastkiv.bookstore.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,6 +13,7 @@ import static ruslan.shastkiv.bookstore.utils.UserTestUtils.createUserLoginReque
 import static ruslan.shastkiv.bookstore.utils.UserTestUtils.createUserRegisterDto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,7 +86,7 @@ public class AuthenticationControllerTest {
 
         UserDto actualDto = objectMapper.readValue(
                 result.getResponse().getContentAsString(), UserDto.class);
-        assertEquals(expectedDto, actualDto);
+        Assertions.assertEquals(expectedDto, actualDto);
     }
 
     @Test
@@ -112,6 +111,6 @@ public class AuthenticationControllerTest {
         UserLoginResponseDto actualDto = objectMapper.readValue(
                 result.getResponse().getContentAsString(), UserLoginResponseDto.class);
 
-        assertFalse(actualDto.token().isEmpty());
+        Assertions.assertFalse(actualDto.token().isEmpty());
     }
 }

@@ -1,6 +1,7 @@
 package ruslan.shastkiv.bookstore.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,7 @@ public class RoleRepositoryTest {
     public void findByRoleName_validRoleName_returnOptionalWithRole() {
         Optional<Role> actualRole = roleRepository.findByRoleName(Role.RoleName.ROLE_USER);
 
+        assertTrue(actualRole.isPresent());
         assertEquals(Role.RoleName.ROLE_USER, actualRole.get().getRoleName());
     }
 }

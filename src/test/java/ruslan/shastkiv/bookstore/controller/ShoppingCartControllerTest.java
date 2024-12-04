@@ -184,7 +184,7 @@ public class ShoppingCartControllerTest {
         User user = createUser(USER_ID);
         Authentication authentication = getAuthentication(user);
 
-        MvcResult result = mockMvc.perform(delete(ITEM_URL + ITEM_ID_FOR_DELETE)
+        mockMvc.perform(delete(ITEM_URL + ITEM_ID_FOR_DELETE)
                         .with(authentication(authentication))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())

@@ -152,7 +152,7 @@ public class OrderControllerTest {
                 .andReturn();
 
         List<OrderDto> actualDtos = getOrderDtosFromMvcResult(result, objectMapper);
-        assertTrue(expectedDtos.size() == actualDtos.size());
+        assertEquals(expectedDtos.size(), actualDtos.size());
 
     }
 
@@ -176,7 +176,7 @@ public class OrderControllerTest {
         OrderDto actualDto = objectMapper.readValue(
                 result.getResponse().getContentAsString(), OrderDto.class
         );
-        assertTrue(actualDto.status().equals(Order.Status.PROCESSING));
+        assertEquals(actualDto.status(), Order.Status.PROCESSING);
     }
 
     @Test
