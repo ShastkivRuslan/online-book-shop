@@ -77,4 +77,27 @@ public class ShoppingCartTestUtils {
         return new ShoppingCartDto(userId, Set.of(cartItemDto));
     }
 
+    /**
+     * Creates a {@link ShoppingCart} for the specified {@link User} and populates it
+     * with {@link CartItem}s based on the provided list of book IDs.
+     * Each item in the cart is initialized using the same ID as the book
+     * and the quantity is set to the book ID value for simplicity.
+     *
+     * <p>The created {@link ShoppingCart} will have the same ID as the provided user.
+     *
+     * @param user    the {@link User} for whom the shopping cart is created
+     * @param bookIds a list of book IDs to be added to the cart as items
+     * @return a {@link ShoppingCart} instance with the specified user and populated items.
+     */
+    public static ShoppingCart createCartWithItems(User user, List<Long> bookIds) {
+        ShoppingCart cart = new ShoppingCart();
+        cart.setId(user.getId());
+        cart.setUser(user);
+        cart.setCartItems(
+                bookIds.stream()
+                        .map(id -> createCartItem(id, cart))
+                        .collect(Collectors.toSet()));
+        return cart;
+    }
+
 }

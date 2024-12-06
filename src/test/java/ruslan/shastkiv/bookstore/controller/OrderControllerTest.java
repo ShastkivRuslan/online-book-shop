@@ -9,13 +9,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.FIRST_BOOK_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.SECOND_BOOK_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.THIRD_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEMS_URL;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEMS_URL_WiTH_ID_1;
-import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEM_ID_1;
-import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEM_ID_2;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_URL;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_URL_WITH_ID_1;
-import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderDto;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderDtoWithItems;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderItemDto;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createPlaceOrderRequestDto;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createUpdateStatusDto;
@@ -26,6 +27,7 @@ import static ruslan.shastkiv.bookstore.utils.UserTestUtils.createUser;
 import static ruslan.shastkiv.bookstore.utils.UserTestUtils.getAuthentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -108,8 +110,8 @@ public class OrderControllerTest {
         Authentication authentication = getAuthentication(user);
         PlaceOrderRequestDto requestDto = createPlaceOrderRequestDto(USER_ID);
         String json = objectMapper.writeValueAsString(requestDto);
-        OrderDto expectedDto = createOrderDto(USER_ID, List.of(
-                createOrderItemDto(USER_ID)), Order.Status.PENDING);
+        OrderDto expectedDto = createOrderDtoWithItems(
+                USER_ID, List.of(THIRD_BOOK_ID), Order.Status.PENDING);
 
         MvcResult result = mockMvc.perform(post(ORDER_URL)
                         .with(authentication(authentication))
@@ -125,7 +127,7 @@ public class OrderControllerTest {
                         .anyMatch(actualItemDto
                                 -> reflectionEquals(
                                         expectedItemDto, actualItemDto, "id", "orderDate"))));
-        assertTrue((actualDto.orderDate().getSecond() - expectedDto.orderDate().getSecond()) <= 2);
+        assertTrue((actualDto.orderDate().getSecond() - LocalDateTime.now().getSecond() <= 2));
         assertTrue(reflectionEquals(actualDto, expectedDto, "id", "orderDate", "orderItems"));
     }
 
@@ -139,9 +141,9 @@ public class OrderControllerTest {
         User user = createUser(USER_ID);
         Authentication authentication = getAuthentication(user);
         List<OrderDto> expectedDtos = List.of(
-                createOrderDto(USER_ID, List.of(
-                        createOrderItemDto(ORDER_ITEM_ID_1),
-                        createOrderItemDto(ORDER_ITEM_ID_2)
+                createOrderDtoWithItems(USER_ID, List.of(
+                        FIRST_BOOK_ID,
+                        SECOND_BOOK_ID
                 ), Order.Status.PENDING));
 
         MvcResult result = mockMvc.perform(
@@ -187,8 +189,8 @@ public class OrderControllerTest {
     @WithMockUser(username = "user")
     public void getOrderItems_validOrderId_returnPageWithOrderItemDto() throws Exception {
         List<OrderItemDto> expectedDtos = List.of(
-                createOrderItemDto(ORDER_ITEM_ID_1),
-                createOrderItemDto(ORDER_ITEM_ID_2)
+                createOrderItemDto(FIRST_BOOK_ID),
+                createOrderItemDto(SECOND_BOOK_ID)
         );
 
         MvcResult result = mockMvc.perform(
@@ -210,7 +212,7 @@ public class OrderControllerTest {
             """)
     @WithMockUser(username = "user")
     public void getOrderItem_validIds_returnOrderItemDto() throws Exception {
-        OrderItemDto expectedDto = createOrderItemDto(ORDER_ITEM_ID_1);
+        OrderItemDto expectedDto = createOrderItemDto(FIRST_BOOK_ID);
 
         MvcResult result = mockMvc.perform(
                         get(ORDER_URL_WITH_ID_1 + ORDER_ITEMS_URL_WiTH_ID_1)
