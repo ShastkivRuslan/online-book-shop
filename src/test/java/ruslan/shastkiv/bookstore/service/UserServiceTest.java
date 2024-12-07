@@ -1,7 +1,9 @@
 package ruslan.shastkiv.bookstore.service;
 
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,8 +22,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,8 +45,6 @@ public class UserServiceTest {
     @InjectMocks
     private UserServiceImpl userService;
     @Mock
-    private UserMapper userMapper;
-    @Mock
     private UserRepository userRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -50,6 +52,8 @@ public class UserServiceTest {
     private RoleRepository roleRepository;
     @Mock
     private ShoppingCartService shoppingCartService;
+    @Spy
+    private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
     @Test
     @DisplayName("""
@@ -58,21 +62,19 @@ public class UserServiceTest {
             """)
     public void register_validRequestDto_returnUserDto() {
         User user = createUser(USER_ID);
-        UserDto expectedDto = createUserDto(USER_ID);
         UserRegistrationRequestDto userRegisterDto = createUserRegisterDto(USER_ID);
         Role role = createRole(ROLE_USER_ID);
 
         when(userRepository.existsByEmail(any(String.class))).thenReturn(false);
-        when(userMapper.toModel(any(UserRegistrationRequestDto.class))).thenReturn(user);
         when(passwordEncoder.encode(any(String.class))).thenReturn(ENCODED_PASSWORD);
         when(roleRepository.findByRoleName(any(Role.RoleName.class))).thenReturn(Optional.of(role));
         when(userRepository.save(any(User.class))).thenReturn(user);
-        when((userMapper.toDto(any(User.class)))).thenReturn(expectedDto);
 
         UserDto actualDto = userService.register(userRegisterDto);
-        verify(shoppingCartService, times(ONE_INVOCATION)).createShoppingCart(user);
+        UserDto expectedDto = createUserDto(USER_ID);
+        verify(shoppingCartService, times(ONE_INVOCATION)).createShoppingCart(any(User.class));
 
-        assertEquals(expectedDto, actualDto);
+        assertTrue(reflectionEquals(expectedDto, actualDto, "id"));
     }
 
     @Test

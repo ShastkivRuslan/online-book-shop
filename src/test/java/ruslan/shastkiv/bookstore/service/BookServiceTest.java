@@ -3,6 +3,7 @@ package ruslan.shastkiv.bookstore.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -30,8 +31,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -42,6 +45,8 @@ import ruslan.shastkiv.bookstore.dto.book.BookSearchParametersDto;
 import ruslan.shastkiv.bookstore.dto.book.CreateBookRequestDto;
 import ruslan.shastkiv.bookstore.exception.EntityNotFoundException;
 import ruslan.shastkiv.bookstore.mapper.BookMapper;
+import ruslan.shastkiv.bookstore.mapper.BookMapperImpl;
+import ruslan.shastkiv.bookstore.mapper.CategoryMapper;
 import ruslan.shastkiv.bookstore.model.Book;
 import ruslan.shastkiv.bookstore.repository.book.BookRepository;
 import ruslan.shastkiv.bookstore.repository.book.BookSpecificationBuilder;
@@ -55,11 +60,12 @@ public class BookServiceTest {
     @Mock
     private BookRepository bookRepository;
     @Mock
-    private BookMapper bookMapper;
-    @Mock
     private CategoryRepository categoryRepository;
     @Mock
     private BookSpecificationBuilder specificationBuilder;
+
+    @Spy
+    private BookMapper bookMapper = new BookMapperImpl(Mappers.getMapper(CategoryMapper.class));
 
     @Test
     @DisplayName("""
@@ -70,12 +76,10 @@ public class BookServiceTest {
         CreateBookRequestDto requestDto = createBookRequestDtoById(FIRST_BOOK_ID);
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         BookDto expectedBookDto = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-        when(bookMapper.toModel(requestDto)).thenReturn(book);
+
         when(categoryRepository.findAllById(Set.of(FIRST_CATEGORY_ID)))
                 .thenReturn(List.of(createCategoryById(FIRST_CATEGORY_ID)));
-        when(bookRepository.save(book)).thenReturn(book);
-        when(bookMapper.toDto(book)).thenReturn(expectedBookDto);
-
+        when(bookRepository.save(any(Book.class))).thenReturn(book);
         BookDto actual = bookService.createBook(requestDto);
 
         assertEquals(expectedBookDto, actual);
@@ -90,10 +94,9 @@ public class BookServiceTest {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         Page<Book> bookPage = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE_1);
         BookDto bookDto = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-        when(bookRepository.findAllWithCategories(PAGEABLE)).thenReturn(bookPage);
-        when(bookMapper.toDto(book)).thenReturn(bookDto);
-        Page<BookDto> expected = new PageImpl<>(List.of(bookDto), PAGEABLE, PAGE_SIZE_1);
 
+        when(bookRepository.findAllWithCategories(PAGEABLE)).thenReturn(bookPage);
+        Page<BookDto> expected = new PageImpl<>(List.of(bookDto), PAGEABLE, PAGE_SIZE_1);
         Page<BookDto> actual = bookService.getAll(PAGEABLE);
 
         assertEquals(expected, actual);
@@ -108,7 +111,6 @@ public class BookServiceTest {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         BookDto expected = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         when(bookRepository.findById(FIRST_BOOK_ID)).thenReturn(Optional.of(book));
-        when(bookMapper.toDto(book)).thenReturn(expected);
 
         BookDto actual = bookService.getBookById(FIRST_BOOK_ID);
 
@@ -169,7 +171,6 @@ public class BookServiceTest {
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
         Page<Book> books = new PageImpl<>(List.of(book), PAGEABLE, PAGE_SIZE_1);
         BookDto dto = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
-        when(bookMapper.toDto(book)).thenReturn(dto);
         when(specificationBuilder.build(searchParametersDto)).thenReturn(specification);
         when(bookRepository.findAll(specification, PAGEABLE)).thenReturn(books);
         Page<BookDto> expected = new PageImpl<>(List.of(dto), PAGEABLE, PAGE_SIZE_1);

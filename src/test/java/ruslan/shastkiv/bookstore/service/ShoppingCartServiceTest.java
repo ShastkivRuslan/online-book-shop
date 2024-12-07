@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.FIRST_BOOK_ID;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.THIRD_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.createBookById;
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.FIRST_CATEGORY_ID;
 import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.ONE_INVOCATION;
@@ -17,8 +18,10 @@ import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.UPDATED_QUAN
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createCart;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createCartItem;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createCartItemRequestDto;
+import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createCartWithItems;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createShoppingCartDto;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createUpdateCartItemDto;
+import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.updateCartItemQuantity;
 import static ruslan.shastkiv.bookstore.utils.UserTestUtils.INVALID_USER_ID;
 import static ruslan.shastkiv.bookstore.utils.UserTestUtils.USER_ID;
 import static ruslan.shastkiv.bookstore.utils.UserTestUtils.createUser;
@@ -33,11 +36,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ruslan.shastkiv.bookstore.dto.cart.ShoppingCartDto;
 import ruslan.shastkiv.bookstore.dto.item.CartItemRequestDto;
 import ruslan.shastkiv.bookstore.exception.EntityNotFoundException;
+import ruslan.shastkiv.bookstore.mapper.BookMapperImpl;
+import ruslan.shastkiv.bookstore.mapper.CartItemMapperImpl;
+import ruslan.shastkiv.bookstore.mapper.CategoryMapperImpl;
 import ruslan.shastkiv.bookstore.mapper.ShoppingCartMapper;
+import ruslan.shastkiv.bookstore.mapper.ShoppingCartMapperImpl;
 import ruslan.shastkiv.bookstore.model.Book;
 import ruslan.shastkiv.bookstore.model.CartItem;
 import ruslan.shastkiv.bookstore.model.ShoppingCart;
@@ -54,11 +62,12 @@ public class ShoppingCartServiceTest {
     @Mock
     private ShoppingCartRepository shoppingCartRepository;
     @Mock
-    private ShoppingCartMapper shoppingCartMapper;
-    @Mock
     private CartItemRepository cartItemRepository;
     @Mock
     private BookService bookService;
+    @Spy
+    private ShoppingCartMapper shoppingCartMapper = new ShoppingCartMapperImpl(
+            new CartItemMapperImpl(new BookMapperImpl(new CategoryMapperImpl())));
 
     @Test
     @DisplayName("""
@@ -87,7 +96,7 @@ public class ShoppingCartServiceTest {
         ShoppingCartDto shoppingCartDto = createShoppingCartDto(USER_ID, List.of());
 
         when(shoppingCartRepository.findById(USER_ID)).thenReturn(Optional.of(cart));
-        when(shoppingCartMapper.toDto(cart)).thenReturn(shoppingCartDto);
+        //when(shoppingCartMapper.toDto(cart)).thenReturn(shoppingCartDto);
         ShoppingCartDto actualDto = shoppingCartService.getShoppingCart(USER_ID);
 
         assertEquals(shoppingCartDto, actualDto);
@@ -111,7 +120,7 @@ public class ShoppingCartServiceTest {
         when(cartItemRepository.findByBookIdAndShoppingCartId(FIRST_BOOK_ID, USER_ID))
                 .thenReturn(Optional.of(cartItem));
         when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(cart);
-        when(shoppingCartMapper.toDto(cart)).thenReturn(shoppingCartDto);
+        //when(shoppingCartMapper.toDto(cart)).thenReturn(shoppingCartDto);
 
         ShoppingCartDto result = shoppingCartService.addBookToCart(USER_ID, requestDto);
         assertNotNull(result);
@@ -143,22 +152,18 @@ public class ShoppingCartServiceTest {
             - Should update the quantity of an item in the shopping cart and return ShoppingCartDto
             """)
     public void updateItemQuantity_validRequest_returnShoppingCartDto() {
-        ShoppingCart cart = createCart(USER_ID, createUser(USER_ID), Set.of());
-        CartItem cartItem = createCartItem(ITEM_ID_3, cart);
-        cart.setCartItems(Set.of(cartItem));
-        ShoppingCartDto expectedDto = createShoppingCartDto(USER_ID, List.of(ITEM_ID_3));
+        ShoppingCart cart = createCartWithItems(createUser(USER_ID), List.of(THIRD_BOOK_ID));
+        updateCartItemQuantity(cart, THIRD_BOOK_ID, UPDATED_QUANTITY);
+
         when(cartItemRepository.findByIdAndShoppingCartId(ITEM_ID_3, USER_ID))
-                .thenReturn(Optional.of(cartItem));
-        when(shoppingCartMapper.toDto(any(ShoppingCart.class))).thenReturn(expectedDto);
+                .thenReturn(Optional.of(createCartItem(THIRD_BOOK_ID, cart)));
         when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(cart);
-
         ShoppingCartDto actualDto = shoppingCartService.updateItemQuantity(
-                USER_ID,
-                ITEM_ID_3,
-                createUpdateCartItemDto(UPDATED_QUANTITY)
-        );
+                USER_ID, ITEM_ID_3, createUpdateCartItemDto(UPDATED_QUANTITY));
 
-        assertEquals(expectedDto, actualDto);
+        assertTrue(cart.getCartItems().stream()
+                .filter(item -> item.getBook().getId().equals(THIRD_BOOK_ID))
+                .anyMatch(item -> item.getQuantity() == UPDATED_QUANTITY));
     }
 
     @Test

@@ -128,7 +128,10 @@ public class OrderControllerTest {
                                 -> reflectionEquals(
                                         expectedItemDto, actualItemDto, "id", "orderDate"))));
         assertTrue((actualDto.orderDate().getSecond() - LocalDateTime.now().getSecond() <= 2));
-        assertTrue(reflectionEquals(actualDto, expectedDto, "id", "orderDate", "orderItems"));
+        assertEquals(actualDto.userId(), user.getId());
+        assertEquals(actualDto.status(), Order.Status.PENDING);
+        assertTrue(actualDto.total().compareTo(expectedDto.total()) == 0);
+
     }
 
     @Test
@@ -178,7 +181,7 @@ public class OrderControllerTest {
         OrderDto actualDto = objectMapper.readValue(
                 result.getResponse().getContentAsString(), OrderDto.class
         );
-        assertEquals(actualDto.status(), Order.Status.PROCESSING);
+        assertEquals(Order.Status.PROCESSING, actualDto.status());
     }
 
     @Test

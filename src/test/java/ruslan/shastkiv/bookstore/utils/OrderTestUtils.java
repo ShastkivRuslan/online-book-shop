@@ -32,6 +32,8 @@ public class OrderTestUtils {
     public static final Long ORDER_ITEM_ID_1 = 1L;
     public static final Long NOT_EXISTED_ORDER_ITEM_ID = 100L;
 
+    public static final int EXPECTED_PRICE = 14;
+
     public static final LocalDateTime ORDER_DATE
             = LocalDateTime.of(2024, 12, 6, 15, 30, 0, 0);
 
@@ -53,8 +55,10 @@ public class OrderTestUtils {
 
     /**
      * Creates an {@link OrderDto} with the specified order ID, a list of {@link OrderItemDto}s,
-     * and the order status. The order date is set to the current time, and the total is set
-     * to a fixed value (9). This method is useful for creating an {@link OrderDto} with
+     * and the order status. The order date is set to the current time.
+     * The total cost is calculated as the sum of the products of the item quantities
+     * and their IDs (used as a placeholder for price in this test utility).
+     * This method is useful for creating an {@link OrderDto} with
      * predefined values for testing or other purposes.
      *
      * @param id     the ID of the order;
@@ -125,7 +129,7 @@ public class OrderTestUtils {
         orderItem.setId(bookId);
         orderItem.setBook(book);
         orderItem.setQuantity(book.getId().intValue());
-        orderItem.setPrice(book.getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())));
+        orderItem.setPrice(BigDecimal.valueOf(bookId.doubleValue()));
         return orderItem;
     }
 
@@ -183,12 +187,10 @@ public class OrderTestUtils {
                 userId,
                 itemDtos,
                 ORDER_DATE,
-                itemDtos.stream()
-                        .map(orderItem -> new BigDecimal(orderItem.quantity())
-                                .multiply(new BigDecimal(orderItem.id())))
-                        .reduce(BigDecimal.ZERO, BigDecimal::add),
+                BigDecimal.valueOf(itemDtos.stream()
+                        .mapToDouble((orderItem -> orderItem.id() * orderItem.id()))
+                        .sum()),
                 status);
-
     }
 
     /**
