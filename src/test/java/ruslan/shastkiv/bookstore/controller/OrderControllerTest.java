@@ -129,8 +129,8 @@ public class OrderControllerTest {
                                         expectedItemDto, actualItemDto, "id", "orderDate"))));
         assertTrue((actualDto.orderDate().getSecond() - LocalDateTime.now().getSecond() <= 2));
         assertEquals(actualDto.userId(), user.getId());
-        assertEquals(actualDto.status(), Order.Status.PENDING);
-        assertTrue(actualDto.total().compareTo(expectedDto.total()) == 0);
+        assertEquals(Order.Status.PENDING, actualDto.status());
+        assertEquals(0, actualDto.total().compareTo(expectedDto.total()));
 
     }
 

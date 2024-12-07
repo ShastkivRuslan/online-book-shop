@@ -161,9 +161,9 @@ public class ShoppingCartServiceTest {
         ShoppingCartDto actualDto = shoppingCartService.updateItemQuantity(
                 USER_ID, ITEM_ID_3, createUpdateCartItemDto(UPDATED_QUANTITY));
 
-        assertTrue(cart.getCartItems().stream()
-                .filter(item -> item.getBook().getId().equals(THIRD_BOOK_ID))
-                .anyMatch(item -> item.getQuantity() == UPDATED_QUANTITY));
+        assertTrue(actualDto.cartItems().stream()
+                .filter(item -> item.bookId().equals(THIRD_BOOK_ID))
+                .anyMatch(item -> item.quantity() == UPDATED_QUANTITY));
     }
 
     @Test

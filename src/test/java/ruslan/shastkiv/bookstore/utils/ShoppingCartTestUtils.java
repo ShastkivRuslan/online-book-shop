@@ -44,7 +44,8 @@ public class ShoppingCartTestUtils {
      *
      * @param id    the ID of the cart item
      * @param cart  the {@link ShoppingCart} to which the cart item belongs
-     * @return a {@link CartItem} object with the specified ID, associated shopping cart, and book details
+     * @return a {@link CartItem} object with the specified ID,
+     * associated shopping cart, and book details
      */
     public static CartItem createCartItem(Long id, ShoppingCart cart) {
         CartItem cartItem = new CartItem();
@@ -77,7 +78,8 @@ public class ShoppingCartTestUtils {
     /**
      * Creates a {@link ShoppingCartDto} for the specified user with a list of cart item IDs.
      * This method maps the provided list of cart item IDs to {@link CartItemDto} objects and
-     * creates a new shopping cart DTO with the given user ID and the corresponding set of cart items.
+     * creates a new shopping cart DTO with the given user ID and the corresponding
+     * set of cart items.
      *
      * @param userId       the ID of the user owning the shopping cart
      * @param cartItemIds  a list of cart item IDs to include in the shopping cart
