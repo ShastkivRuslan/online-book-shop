@@ -70,7 +70,8 @@ public class CategoryControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("""
-            Should add a category successfully and return category DTO
+            addCategory()
+            - Should add a category successfully and return category DTO
             """)
     @Sql(
             scripts = "classpath:scripts/category/delete_category_after_create.sql",
@@ -96,7 +97,8 @@ public class CategoryControllerTest {
     @Test
     @WithMockUser(username = "user")
     @DisplayName("""
-            Should fetch all categories as a pageable response
+            getAllCategories()
+            - Should fetch all categories as a pageable response
             """)
     public void getAllCategories_AsUser_ReturnPageOfCategories() throws Exception {
         List<CategoryDto> expectedDtos = List.of(
@@ -119,7 +121,8 @@ public class CategoryControllerTest {
     @Test
     @WithMockUser(username = "user")
     @DisplayName("""
-            Should fetch category details by ID as a user
+            getCategoryById()
+            - Should fetch category details by ID as a user
             """)
     public void getCategoryById_ValidId_ReturnCategoryDetails() throws Exception {
         MvcResult result = mockMvc.perform(
@@ -138,7 +141,8 @@ public class CategoryControllerTest {
     @Test
     @WithMockUser(username = "user")
     @DisplayName("""
-            Should fetch all books by category ID as a pageable response
+            getAllBooksByCategoryId()
+            - Should fetch all books by category ID as a pageable response
             """)
     public void getAllBooksByCategoryId_ValidCategoryId_ReturnPageOfBooks() throws Exception {
         List<BookDtoWithoutCategoryIds> expectedDtos = List.of(
@@ -162,7 +166,8 @@ public class CategoryControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("""
-            Should update category details by ID as an admin
+            updateCategoryById()
+            - Should update category details by ID as an admin
             """)
     @Sql(
             scripts = "classpath:scripts/category/revert_updated_category.sql",
@@ -188,7 +193,8 @@ public class CategoryControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("""
-            Should delete a category by ID as an admin
+            deleteCategoryById()
+            - Should delete a category by ID as an admin
             """)
     @Sql(
             scripts = "classpath:scripts/category/set_category_active_after_soft_delete.sql",

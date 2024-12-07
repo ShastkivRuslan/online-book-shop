@@ -24,6 +24,8 @@ public class BookTestUtils {
     public static final Pageable PAGEABLE = PageRequest.of(0, 10);
 
     public static final Long FIRST_BOOK_ID = 1L;
+    public static final Long SECOND_BOOK_ID = 2L;
+    public static final Long THIRD_BOOK_ID = 3L;
     public static final Long FOURTH_BOOK_ID = 4L;
     public static final Long INVALID_BOOK_ID = 100L;
 
