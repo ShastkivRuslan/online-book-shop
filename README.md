@@ -17,3 +17,33 @@ In this app, we will have the following domain models:
 Each part of the application will be implemented incrementally, covering all core functionalities in a layered architecture. This project serves as a practical demonstration of using Spring Boot for building a web-based application, with a focus on best practices and modular development.
 
 By the end of this project, the repository will serve as a showcase of skills and can be shared as part of a portfolio.
+src
+├── main
+│   ├── java/ruslan/shastkiv/bookstore
+│   │   ├── config
+│   │   ├── controller
+│   │   ├── dto
+│   │   ├── exception
+│   │   ├── mapper
+│   │   ├── model
+│   │   ├── repository
+│   │   ├── security
+│   │   ├── service
+│   │   └── validation
+│   ├── resources
+│   │   ├── application.yml
+│   │   └── Db.changelog
+│   │   └── changes
+└── test
+    ├── java/ruslan/shastkiv/bookstore 
+    │   ├── controller 
+    │   ├── service 
+    │   ├── repository 
+    │   └── utils 
+    ├── resources 
+    │   └── scripts 
+    │       ├── book 
+    │       ├── cart 
+    │       ├── category 
+    │       ├── order
+    │       └── user
