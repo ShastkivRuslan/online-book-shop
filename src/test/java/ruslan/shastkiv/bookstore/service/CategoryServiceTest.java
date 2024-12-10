@@ -2,7 +2,7 @@ package ruslan.shastkiv.bookstore.service;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -26,8 +26,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -44,20 +46,21 @@ public class CategoryServiceTest {
     @InjectMocks
     private CategoryServiceImpl categoryService;
     @Mock
-    private CategoryMapper categoryMapper;
-    @Mock
     private CategoryRepository categoryRepository;
+    @Spy
+    private CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper.class);
 
     @Test
-    @DisplayName("Should add a new category and return its DTO")
+    @DisplayName("""
+            addCategory()
+            - Should add a new category and return its DTO
+            """)
     public void addCategory_GivenValidRequestDto_ReturnCategoryDto() {
         CategoryRequestDto requestDto = createCategoryRequestDto(FIRST_CATEGORY_ID);
         Category category = createCategoryById(FIRST_CATEGORY_ID);
         CategoryDto expected = createCategoryDtoById(FIRST_CATEGORY_ID);
-        when(categoryMapper.toModel(requestDto)).thenReturn(category);
-        when(categoryRepository.save(category)).thenReturn(category);
-        when(categoryMapper.toDto(category)).thenReturn(expected);
 
+        when(categoryRepository.save(any(Category.class))).thenReturn(category);
         CategoryDto actual = categoryService.addCategory(requestDto);
 
         assertEquals(expected, actual);
@@ -65,27 +68,26 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should retrieve all categories as a pageable response
+            getAllCategories()
+            - Should retrieve all categories as a pageable response
             """)
     public void getAllCategories_WhenCategoriesExist_ReturnPageOfCategoryDtos() {
         Category firstCategory = createCategoryById(FIRST_CATEGORY_ID);
         Category secondCategory = createCategoryById(SECOND_CATEGORY_ID);
-        CategoryDto firstCategoryDto = createCategoryDtoById(FIRST_CATEGORY_ID);
         CategoryDto secondCategoryDto = createCategoryDtoById(SECOND_CATEGORY_ID);
         Page<Category> categoryPage = new PageImpl<>(
                 List.of(firstCategory,
                         secondCategory
                 ), PAGEABLE, PAGE_SIZE_2
         );
-        when(categoryRepository.findAll(PAGEABLE)).thenReturn(categoryPage);
-        when(categoryMapper.toDto(firstCategory)).thenReturn(firstCategoryDto);
-        when(categoryMapper.toDto(secondCategory)).thenReturn(secondCategoryDto);
+        CategoryDto firstCategoryDto = createCategoryDtoById(FIRST_CATEGORY_ID);
 
+        when(categoryRepository.findAll(PAGEABLE)).thenReturn(categoryPage);
         Page<CategoryDto> actual = categoryService.getAllCategories(PAGEABLE);
 
+        assertEquals(List.of(firstCategoryDto, secondCategoryDto), actual.getContent());
         assertEquals(PAGE_SIZE_2, actual.getTotalElements());
         assertEquals(PAGEABLE.getPageSize(), actual.getSize());
-        assertEquals(List.of(firstCategoryDto, secondCategoryDto), actual.getContent());
         verify(categoryRepository, times(ONE_INVOCATION)).findAll(PAGEABLE);
         verify(categoryMapper, times(ONE_INVOCATION)).toDto(firstCategory);
         verify(categoryMapper, times(ONE_INVOCATION)).toDto(secondCategory);
@@ -94,14 +96,14 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should retrieve a category by its ID and return its DTO
+            getCategoryById()
+            - Should retrieve a category by its ID and return its DTO
             """)
     public void getCategoryById_GivenValidId_ReturnCategoryDto() {
         Category category = createCategoryById(FIRST_CATEGORY_ID);
         CategoryDto expected = createCategoryDtoById(FIRST_CATEGORY_ID);
-        when(categoryRepository.findById(FIRST_CATEGORY_ID)).thenReturn(Optional.of(category));
-        when(categoryMapper.toDto(category)).thenReturn(expected);
 
+        when(categoryRepository.findById(FIRST_CATEGORY_ID)).thenReturn(Optional.of(category));
         CategoryDto actual = categoryService.getCategoryById(FIRST_CATEGORY_ID);
 
         assertEquals(expected, actual);
@@ -111,7 +113,8 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should throw EntityNotFoundException for an invalid category ID
+            getCategoryById()
+            - Should throw EntityNotFoundException for an invalid category ID
             """)
     public void getCategoryById_GivenInvalidId_ThrowEntityNotFoundException() {
         when(categoryRepository.findById(NON_EXISTED_CATEGORY_ID)).thenReturn(Optional.empty());
@@ -123,18 +126,17 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should update an existing category and return updated DTO
+            updateCategory()
+            - Should update an existing category and return updated DTO
             """)
     public void updateCategory_GivenValidIdAndRequestDto_ReturnUpdatedCategoryDto() {
         Category category = createCategoryById(FIRST_CATEGORY_ID);
         CategoryRequestDto requestDto = createCategoryRequestDto(FIRST_CATEGORY_ID);
         Category updatedCategory = createUpdatedCategoryById(FIRST_CATEGORY_ID);
         CategoryDto expected = createUpdatedCategoryDto(FIRST_CATEGORY_ID);
-        when(categoryRepository.findById(FIRST_CATEGORY_ID)).thenReturn(Optional.of(category));
-        doNothing().when(categoryMapper).updateCategoryFromDto(requestDto, category);
-        when(categoryRepository.save(category)).thenReturn(updatedCategory);
-        when(categoryMapper.toDto(updatedCategory)).thenReturn(expected);
 
+        when(categoryRepository.findById(FIRST_CATEGORY_ID)).thenReturn(Optional.of(category));
+        when(categoryRepository.save(category)).thenReturn(updatedCategory);
         CategoryDto actual = categoryService.updateCategory(FIRST_CATEGORY_ID, requestDto);
 
         assertEquals(expected, actual);
@@ -146,7 +148,8 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should throw EntityNotFoundException when updating non-existent category
+            updateCategory()
+            - Should throw EntityNotFoundException when updating non-existent category
             """)
     public void updateCategory_GivenInvalidId_ThrowEntityNotFoundException() {
         assertThrows(EntityNotFoundException.class,
@@ -159,7 +162,8 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("""
-            Should delete a category by its ID
+            deleteCategory()
+            - Should delete a category by its ID
             """)
     public void deleteCategory_GivenValidId_DeleteCategory() {
         categoryService.deleteCategory(FIRST_CATEGORY_ID);

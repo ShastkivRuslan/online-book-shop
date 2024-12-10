@@ -75,7 +75,8 @@ public class BookControllerTest {
     @WithMockUser(username = "user")
     @Test
     @DisplayName("""
-            Should retrieve all books from the catalog as a pageable response
+            getAll()
+            - Should retrieve all books from the catalog as a pageable response
             """)
     public void getAll_GivenBooksInCatalog_ReturnPageDtos() throws Exception {
         List<BookDto> expectedDtos = List.of(
@@ -99,7 +100,8 @@ public class BookControllerTest {
     @WithMockUser(username = "user")
     @Test
     @DisplayName("""
-            Should retrieve a book by its ID
+            getBookById()
+            - Should retrieve a book by its ID
             """)
     public void getBookById_BookById_ReturnBookDto() throws Exception {
         BookDto expected = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
@@ -118,7 +120,8 @@ public class BookControllerTest {
     @WithMockUser(username = "user")
     @Test
     @DisplayName("""
-            Should throw EntityNotFoundException for an invalid book ID
+            getBookById()
+            - Should throw EntityNotFoundException for an invalid book ID
             """)
     public void getBokById_BookByInvalidId_ThrowException() throws Exception {
         mockMvc.perform(
@@ -136,7 +139,8 @@ public class BookControllerTest {
     @WithMockUser(username = "user")
     @Test
     @DisplayName("""
-            Should return books matching the valid search parameters
+            search()
+            - Should return books matching the valid search parameters
             """)
     public void search_ValidSearchParams_ReturnBookDto() throws Exception {
         List<BookDto> expectedDtos =
@@ -158,7 +162,8 @@ public class BookControllerTest {
     @WithMockUser(username = "user")
     @Test
     @DisplayName("""
-            Should return an empty page when no books match the search parameters
+            search()
+            - Should return an empty page when no books match the search parameters
             """)
     public void search_InvalidSearchParams_ReturnEmptyPage() throws Exception {
         MvcResult result = mockMvc.perform(
@@ -175,7 +180,8 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
     @DisplayName("""
-            Should create a new book and return its details
+            createBook()
+            - Should create a new book and return its details
             """)
     @Sql(
             scripts = "classpath:scripts/book/remove_book_after_create_method.sql",
@@ -188,7 +194,7 @@ public class BookControllerTest {
         MvcResult result = mockMvc.perform(
                         MockMvcRequestBuilders.post(BOOK_URL)
                                 .content(json)
-                               .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
         BookDto expected = createBookDtoById(FOURTH_BOOK_ID, List.of(FIRST_CATEGORY_ID));
@@ -201,7 +207,8 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
     @DisplayName("""
-            Should update an existing book and return the updated details
+            updateBook()
+            - Should update an existing book and return the updated details
             """)
     @Sql(
             scripts = "classpath:scripts/book/revert_updated_book.sql",
@@ -228,7 +235,8 @@ public class BookControllerTest {
     @WithMockUser(username = "user", roles = {"ADMIN"})
     @Test
     @DisplayName("""
-            Should throw EntityNotFoundException for an invalid book ID during update
+            updateBook()
+            - Should throw EntityNotFoundException for an invalid book ID during update
             """)
     public void updateBook_BookByInvalidId_ThrowException() throws Exception {
         CreateBookRequestDto requestDto = updateBookRequestDtoById(FOURTH_BOOK_ID);
@@ -249,7 +257,8 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
     @DisplayName("""
-            Should delete a book by its ID and return no content
+            deleteBook()
+            - Should delete a book by its ID and return no content
             """)
     @Sql(
             scripts = "classpath:scripts/book/set_book_active_after_delete_method.sql",
