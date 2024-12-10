@@ -27,6 +27,6 @@ public class RoleRepositoryTest {
         Optional<Role> actualRole = roleRepository.findByRoleName(Role.RoleName.ROLE_USER);
 
         assertTrue(actualRole.isPresent());
-        assertEquals(Role.RoleName.ROLE_USER, actualRole.get().getRoleName());
+        assertEquals(Role.RoleName.ROLE_USER, actualRole.orElseThrow().getRoleName());
     }
 }

@@ -56,13 +56,14 @@ public class CartItemRepositoryTest {
 
         Optional<CartItem> actual
                 = cartItemRepository.findByIdAndShoppingCartId(ITEM_ID_3, USER_ID);
+        String actualBookTitle = actual.orElseThrow().getBook().getTitle();
+        Long actualCartId = actual.orElseThrow().getShoppingCart().getId();
 
-        assertTrue(actual.isPresent());
         assertEquals(
-                actual.get().getBook().getTitle(),
+                actualBookTitle,
                 CUSTOM_BOOK_TITLE.formatted(THIRD_BOOK_ID)
         );
-        assertEquals(USER_ID, actual.get().getShoppingCart().getId());
+        assertEquals(USER_ID, actualCartId);
     }
 
     @Test
@@ -97,13 +98,14 @@ public class CartItemRepositoryTest {
     public void findByBookIdAndShoppingCartId_validIds_returnsOptionalWithCartItem() {
         Optional<CartItem> actual
                 = cartItemRepository.findByBookIdAndShoppingCartId(THIRD_BOOK_ID, USER_ID);
+        String actualBookTitle = actual.orElseThrow().getBook().getTitle();
+        Long actualCartId = actual.orElseThrow().getShoppingCart().getId();
 
-        assertTrue(actual.isPresent());
         assertEquals(
-                actual.get().getBook().getTitle(),
+                actualBookTitle,
                 CUSTOM_BOOK_TITLE.formatted(THIRD_BOOK_ID)
         );
-        assertEquals(USER_ID, actual.get().getShoppingCart().getId());
+        assertEquals(USER_ID, actualCartId);
     }
 
     @Test

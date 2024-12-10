@@ -1,9 +1,9 @@
 package ruslan.shastkiv.bookstore.service;
 
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -32,6 +32,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -75,14 +76,16 @@ public class BookServiceTest {
     void createBook_ValidCreateBookDto_ReturnBookDto() {
         CreateBookRequestDto requestDto = createBookRequestDtoById(FIRST_BOOK_ID);
         Book book = createBookById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
+        ArgumentCaptor<Book> bookCaptor = ArgumentCaptor.forClass(Book.class);
         BookDto expectedBookDto = createBookDtoById(FIRST_BOOK_ID, List.of(FIRST_CATEGORY_ID));
 
         when(categoryRepository.findAllById(Set.of(FIRST_CATEGORY_ID)))
                 .thenReturn(List.of(createCategoryById(FIRST_CATEGORY_ID)));
-        when(bookRepository.save(any(Book.class))).thenReturn(book);
+        when(bookRepository.save(bookCaptor.capture())).thenReturn(book);
         BookDto actual = bookService.createBook(requestDto);
 
         assertEquals(expectedBookDto, actual);
+        assertTrue(reflectionEquals(bookCaptor.getValue().getTitle(), actual.getTitle()));
     }
 
     @Test

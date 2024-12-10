@@ -1,16 +1,25 @@
 package ruslan.shastkiv.bookstore.repository;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.CUSTOM_BOOK_TITLE;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.FIRST_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.BookTestUtils.PAGEABLE;
+import static ruslan.shastkiv.bookstore.utils.BookTestUtils.SECOND_BOOK_ID;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.NOT_EXISTED_ORDER_ID;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.NOT_EXISTED_ORDER_ITEM_ID;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ID_1;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEM_ID_1;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrder;
+import static ruslan.shastkiv.bookstore.utils.UserTestUtils.USER_ID;
+import static ruslan.shastkiv.bookstore.utils.UserTestUtils.createUser;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +27,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.jdbc.Sql;
+import ruslan.shastkiv.bookstore.model.Order;
 import ruslan.shastkiv.bookstore.model.OrderItem;
+import ruslan.shastkiv.bookstore.model.User;
 import ruslan.shastkiv.bookstore.repository.order.OrderItemRepository;
 
 @DataJpaTest
@@ -56,8 +67,38 @@ public class OrderItemRepositoryTest {
             - should return pageable Order Items when valid Order ID is provided
             """)
     public void findAllByOrderId_validOrderId_returnPageableOrderItems() {
+        User user = createUser(USER_ID);
+        Order expectedOrder = createOrder(user, List.of(FIRST_BOOK_ID, SECOND_BOOK_ID));
+        Set<OrderItem> expectedItems = expectedOrder.getOrderItems();
+
         Page<OrderItem> actualPage = orderItemRepository.findAllByOrderId(ORDER_ID_1, PAGEABLE);
+        Set<OrderItem> actualItems = actualPage.get().collect(Collectors.toSet());
+
         assertTrue(actualPage.hasContent());
+        assertAll("Order items lists comparison",
+                () -> assertIterableEquals(
+                        expectedItems.stream().map(OrderItem::getId).collect(Collectors.toSet()),
+                        actualItems.stream().map(OrderItem::getId).collect(Collectors.toSet()),
+                        "IDs do not match"
+                ),
+                () -> assertIterableEquals(
+                        expectedItems.stream().map(OrderItem::getBook).collect(Collectors.toSet()),
+                        actualItems.stream().map(OrderItem::getBook).collect(Collectors.toSet()),
+                        "Books do not match"
+                ),
+                () -> assertIterableEquals(
+                        expectedItems.stream().map(OrderItem::getQuantity)
+                                .collect(Collectors.toSet()),
+                        actualItems.stream().map(OrderItem::getQuantity)
+                                .collect(Collectors.toSet()),
+                        "Quantities do not match"
+                ),
+                () -> assertTrue(
+                        actualItems.stream().allMatch(item
+                                -> item.getOrder().getId().equals(ORDER_ID_1)),
+                        "Order Ids do not match"
+                )
+        );
     }
 
     @Test

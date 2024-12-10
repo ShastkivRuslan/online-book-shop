@@ -1,7 +1,8 @@
 package ruslan.shastkiv.bookstore.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,10 +15,10 @@ import static ruslan.shastkiv.bookstore.utils.CategoryTestUtils.ONE_INVOCATION;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.EXPECTED_PRICE;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ID_1;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEM_ID_1;
-import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderDtoWithItems;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrder;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderDto;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderItem;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderItemDto;
-import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderWithItems;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createPlaceOrderRequestDto;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createUpdateStatusDto;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createCartWithItems;
@@ -27,11 +28,11 @@ import static ruslan.shastkiv.bookstore.utils.UserTestUtils.getAuthentication;
 
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -81,18 +82,21 @@ public class OrderServiceTest {
         User user = createUser(USER_ID);
         Authentication authentication = getAuthentication(user);
         ShoppingCart cart = createCartWithItems(user, List.of(FIRST_BOOK_ID));
-        Order order = createOrderWithItems(user, List.of(FIRST_BOOK_ID));
+        Order order = createOrder(user, List.of(FIRST_BOOK_ID));
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
 
         when(userService.getUserId(authentication)).thenReturn(USER_ID);
         when(shoppingCartService.findShoppingCart(USER_ID)).thenReturn(cart);
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(orderRepository.save(orderCaptor.capture())).thenReturn(order);
         OrderDto actualDto = orderService.placeOrderByUserId(
                 authentication, createPlaceOrderRequestDto(USER_ID));
-        OrderDto expectedDto = createOrderDtoWithItems(
+        OrderDto expectedDto = createOrderDto(
                 USER_ID, List.of(FIRST_BOOK_ID), Order.Status.PENDING);
+        Order capturedOrder = orderCaptor.getValue();
 
+        assertEquals(order.getUser(), capturedOrder.getUser());
         verify(shoppingCartService, times(ONE_INVOCATION)).clearShoppingCart(cart);
-        Assertions.assertEquals(expectedDto, actualDto);
+        assertEquals(expectedDto, actualDto);
     }
 
     @Test
@@ -105,7 +109,7 @@ public class OrderServiceTest {
         Authentication authentication = getAuthentication(user);
         ShoppingCart cart = createCartWithItems(
                 user, List.of(FIRST_BOOK_ID, SECOND_BOOK_ID, THIRD_BOOK_ID));
-        Order order = createOrderWithItems(
+        Order order = createOrder(
                 user, List.of(FIRST_BOOK_ID, SECOND_BOOK_ID, THIRD_BOOK_ID));
 
         when(userService.getUserId(authentication)).thenReturn(USER_ID);
@@ -114,7 +118,7 @@ public class OrderServiceTest {
         OrderDto actualDto = orderService.placeOrderByUserId(
                 authentication, createPlaceOrderRequestDto(USER_ID));
 
-        Assertions.assertEquals(EXPECTED_PRICE, actualDto.total().intValue());
+        assertEquals(EXPECTED_PRICE, actualDto.total().intValue());
     }
 
     @Test
@@ -122,7 +126,7 @@ public class OrderServiceTest {
             placeOrderByUserId()
             - Should throw an exception when shopping cart is empty
             """)
-    public void placeOrderByUserId_emptyCart_trowsException() {
+    public void placeOrderByUserId_emptyCart_throwsException() {
         User user = createUser(USER_ID);
         Authentication authentication = getAuthentication(user);
         ShoppingCart cart = createCartWithItems(user, List.of());
@@ -140,17 +144,17 @@ public class OrderServiceTest {
             - Should get all orders by user ID
             """)
     public void getAllOrdersByUserId_validRequest_returnPageableOrderDto() {
-        OrderDto orderDto = createOrderDtoWithItems(
+        OrderDto orderDto = createOrderDto(
                 USER_ID, List.of(FIRST_BOOK_ID), Order.Status.PENDING);
         PageImpl<OrderDto> expectedPage = new PageImpl<>(List.of(orderDto), PAGEABLE, PAGE_SIZE_1);
-        Order order = createOrderWithItems(
+        Order order = createOrder(
                 createUser(USER_ID), List.of(FIRST_BOOK_ID));
         Page<Order> orderPage = new PageImpl<>(List.of(order), PAGEABLE, PAGE_SIZE_1);
 
         when(orderRepository.findAllByUserId(USER_ID, PAGEABLE)).thenReturn(orderPage);
         Page<OrderDto> actualPage = orderService.getAllOrdersByUserId(USER_ID, PAGEABLE);
 
-        Assertions.assertEquals(expectedPage, actualPage);
+        assertEquals(expectedPage, actualPage);
     }
 
     @Test
@@ -159,18 +163,18 @@ public class OrderServiceTest {
             - Should update order status
             """)
     public void updateOrderStatus_validRequest_returnOrderDto() {
-        Order order = createOrderWithItems(createUser(USER_ID), List.of(FIRST_BOOK_ID));
-        Order updatedOrder = createOrderWithItems(createUser(USER_ID), List.of(FIRST_BOOK_ID));
+        Order order = createOrder(createUser(USER_ID), List.of(FIRST_BOOK_ID));
+        Order updatedOrder = createOrder(createUser(USER_ID), List.of(FIRST_BOOK_ID));
         updatedOrder.setStatus(Order.Status.PROCESSING);
-        OrderDto expectedDto = createOrderDtoWithItems(
+        OrderDto expectedDto = createOrderDto(
                 USER_ID, List.of(FIRST_BOOK_ID), Order.Status.PROCESSING);
 
         when(orderRepository.findById(ORDER_ID_1)).thenReturn(Optional.of(order));
-        when(orderRepository.save(any(Order.class))).thenReturn(updatedOrder);
+        when(orderRepository.save(order)).thenReturn(updatedOrder);
         OrderDto actualDto = orderService.updateOrderStatus(
                 ORDER_ID_1, createUpdateStatusDto(Order.Status.PROCESSING));
 
-        Assertions.assertEquals(expectedDto, actualDto);
+        assertEquals(expectedDto, actualDto);
     }
 
     @Test
@@ -189,7 +193,7 @@ public class OrderServiceTest {
         when(orderItemRepository.findAllByOrderId(ORDER_ID_1, PAGEABLE)).thenReturn(orderItems);
         Page<OrderItemDto> actualPage = orderService.getOrderItemsByOrderId(ORDER_ID_1, PAGEABLE);
 
-        Assertions.assertEquals(expectedPage, actualPage);
+        assertEquals(expectedPage, actualPage);
     }
 
     @Test
@@ -206,6 +210,6 @@ public class OrderServiceTest {
 
         OrderItemDto actualDto = orderService.getOrderItem(ORDER_ID_1, ORDER_ITEM_ID_1);
 
-        Assertions.assertEquals(orderItemDto, actualDto);
+        assertEquals(orderItemDto, actualDto);
     }
 }

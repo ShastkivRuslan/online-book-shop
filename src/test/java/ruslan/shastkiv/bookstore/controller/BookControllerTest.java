@@ -194,7 +194,7 @@ public class BookControllerTest {
         MvcResult result = mockMvc.perform(
                         MockMvcRequestBuilders.post(BOOK_URL)
                                 .content(json)
-                               .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
         BookDto expected = createBookDtoById(FOURTH_BOOK_ID, List.of(FIRST_CATEGORY_ID));

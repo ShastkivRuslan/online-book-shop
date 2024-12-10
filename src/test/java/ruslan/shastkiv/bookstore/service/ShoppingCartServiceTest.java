@@ -96,7 +96,6 @@ public class ShoppingCartServiceTest {
         ShoppingCartDto shoppingCartDto = createShoppingCartDto(USER_ID, List.of());
 
         when(shoppingCartRepository.findById(USER_ID)).thenReturn(Optional.of(cart));
-        //when(shoppingCartMapper.toDto(cart)).thenReturn(shoppingCartDto);
         ShoppingCartDto actualDto = shoppingCartService.getShoppingCart(USER_ID);
 
         assertEquals(shoppingCartDto, actualDto);
@@ -120,7 +119,6 @@ public class ShoppingCartServiceTest {
         when(cartItemRepository.findByBookIdAndShoppingCartId(FIRST_BOOK_ID, USER_ID))
                 .thenReturn(Optional.of(cartItem));
         when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(cart);
-        //when(shoppingCartMapper.toDto(cart)).thenReturn(shoppingCartDto);
 
         ShoppingCartDto result = shoppingCartService.addBookToCart(USER_ID, requestDto);
         assertNotNull(result);
@@ -188,8 +186,11 @@ public class ShoppingCartServiceTest {
     public void findShoppingCart_invalidRequest_throwException() {
         when(shoppingCartRepository.findById(INVALID_USER_ID)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class,
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> shoppingCartService.findShoppingCart(INVALID_USER_ID));
+
+        assertEquals("Cant find shopping cart by user id: [" + INVALID_USER_ID + "]",
+                exception.getMessage());
 
     }
 

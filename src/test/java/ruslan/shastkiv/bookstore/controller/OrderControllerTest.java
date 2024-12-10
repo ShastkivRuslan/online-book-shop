@@ -1,9 +1,10 @@
 package ruslan.shastkiv.bookstore.controller;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -16,15 +17,13 @@ import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEMS_URL;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_ITEMS_URL_WiTH_ID_1;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_URL;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.ORDER_URL_WITH_ID_1;
-import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderDtoWithItems;
+import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderDto;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createOrderItemDto;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createPlaceOrderRequestDto;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.createUpdateStatusDto;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.getOrderDtosFromMvcResult;
 import static ruslan.shastkiv.bookstore.utils.OrderTestUtils.getOrderItemDtosFromMvcResult;
 import static ruslan.shastkiv.bookstore.utils.UserTestUtils.USER_ID;
-import static ruslan.shastkiv.bookstore.utils.UserTestUtils.createUser;
-import static ruslan.shastkiv.bookstore.utils.UserTestUtils.getAuthentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
@@ -35,8 +34,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -47,7 +46,6 @@ import ruslan.shastkiv.bookstore.dto.order.OrderItemDto;
 import ruslan.shastkiv.bookstore.dto.order.PlaceOrderRequestDto;
 import ruslan.shastkiv.bookstore.dto.order.UpdateOrderStatusRequestDto;
 import ruslan.shastkiv.bookstore.model.Order;
-import ruslan.shastkiv.bookstore.model.User;
 
 @Sql(
         scripts = {
@@ -96,7 +94,7 @@ public class OrderControllerTest {
             placeOrder()
             - Should place an order and return Order Dto
             """)
-    @WithMockUser(username = "user")
+    @WithUserDetails("user_email_3@mail.com")
     @Sql(
             scripts = {
                     "classpath:scripts/order/remove_order_items_after_placing_order.sql",
@@ -106,15 +104,12 @@ public class OrderControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     public void placeOrder_validRequestDto_returnOrderDto() throws Exception {
-        User user = createUser(USER_ID);
-        Authentication authentication = getAuthentication(user);
         PlaceOrderRequestDto requestDto = createPlaceOrderRequestDto(USER_ID);
         String json = objectMapper.writeValueAsString(requestDto);
-        OrderDto expectedDto = createOrderDtoWithItems(
+        OrderDto expectedDto = createOrderDto(
                 USER_ID, List.of(THIRD_BOOK_ID), Order.Status.PENDING);
 
         MvcResult result = mockMvc.perform(post(ORDER_URL)
-                        .with(authentication(authentication))
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -128,10 +123,9 @@ public class OrderControllerTest {
                                 -> reflectionEquals(
                                         expectedItemDto, actualItemDto, "id", "orderDate"))));
         assertTrue((actualDto.orderDate().getSecond() - LocalDateTime.now().getSecond() <= 2));
-        assertEquals(actualDto.userId(), user.getId());
+        assertEquals(USER_ID, actualDto.userId());
         assertEquals(Order.Status.PENDING, actualDto.status());
         assertEquals(0, actualDto.total().compareTo(expectedDto.total()));
-
     }
 
     @Test
@@ -139,26 +133,22 @@ public class OrderControllerTest {
             getOrders()
             - Should retrieve all orders by authenticated user
             """)
-    @WithMockUser(username = "user")
+    @WithUserDetails("user_email_3@mail.com")
     public void getOrders_validUser_returnPageOrderDto() throws Exception {
-        User user = createUser(USER_ID);
-        Authentication authentication = getAuthentication(user);
         List<OrderDto> expectedDtos = List.of(
-                createOrderDtoWithItems(USER_ID, List.of(
+                createOrderDto(USER_ID, List.of(
                         FIRST_BOOK_ID,
                         SECOND_BOOK_ID
                 ), Order.Status.PENDING));
 
         MvcResult result = mockMvc.perform(
                         get(ORDER_URL)
-                                .with(authentication(authentication))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
         List<OrderDto> actualDtos = getOrderDtosFromMvcResult(result, objectMapper);
         assertEquals(expectedDtos.size(), actualDtos.size());
-
     }
 
     @Test
@@ -189,7 +179,7 @@ public class OrderControllerTest {
             getOrderItems()
             - Should return page with OrderItemDto`s
             """)
-    @WithMockUser(username = "user")
+    @WithUserDetails("user_email_3@mail.com")
     public void getOrderItems_validOrderId_returnPageWithOrderItemDto() throws Exception {
         List<OrderItemDto> expectedDtos = List.of(
                 createOrderItemDto(FIRST_BOOK_ID),
@@ -203,9 +193,23 @@ public class OrderControllerTest {
                 .andReturn();
         List<OrderItemDto> actualDtos = getOrderItemDtosFromMvcResult(result, objectMapper);
 
-        assertTrue(expectedDtos.stream()
-                .allMatch(expectedDto -> actualDtos.stream()
-                        .anyMatch(actualDto -> reflectionEquals(expectedDto, actualDto))));
+        assertAll("DTO lists comparison",
+                () -> assertIterableEquals(
+                        expectedDtos.stream().map(OrderItemDto::id).toList(),
+                        actualDtos.stream().map(OrderItemDto::id).toList(),
+                        "IDs do not match"
+                ),
+                () -> assertIterableEquals(
+                        expectedDtos.stream().map(OrderItemDto::bookId).toList(),
+                        actualDtos.stream().map(OrderItemDto::bookId).toList(),
+                        "Book IDs do not match"
+                ),
+                () -> assertIterableEquals(
+                        expectedDtos.stream().map(OrderItemDto::quantity).toList(),
+                        actualDtos.stream().map(OrderItemDto::quantity).toList(),
+                        "Quantities do not match"
+                )
+        );
     }
 
     @Test
@@ -213,7 +217,7 @@ public class OrderControllerTest {
             getOrderItem()
             - Should return valid OrderItemDto
             """)
-    @WithMockUser(username = "user")
+    @WithUserDetails("user_email_3@mail.com")
     public void getOrderItem_validIds_returnOrderItemDto() throws Exception {
         OrderItemDto expectedDto = createOrderItemDto(FIRST_BOOK_ID);
 

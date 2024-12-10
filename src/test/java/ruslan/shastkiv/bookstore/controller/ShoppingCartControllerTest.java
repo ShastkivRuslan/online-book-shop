@@ -3,7 +3,6 @@ package ruslan.shastkiv.bookstore.controller;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,8 +21,6 @@ import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createShoppi
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createUpdateCartItemDto;
 import static ruslan.shastkiv.bookstore.utils.ShoppingCartTestUtils.createUpdatedShoppingCartDto;
 import static ruslan.shastkiv.bookstore.utils.UserTestUtils.USER_ID;
-import static ruslan.shastkiv.bookstore.utils.UserTestUtils.createUser;
-import static ruslan.shastkiv.bookstore.utils.UserTestUtils.getAuthentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -33,8 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -43,7 +39,6 @@ import org.springframework.web.context.WebApplicationContext;
 import ruslan.shastkiv.bookstore.dto.cart.ShoppingCartDto;
 import ruslan.shastkiv.bookstore.dto.item.CartItemRequestDto;
 import ruslan.shastkiv.bookstore.dto.item.UpdateCartItemRequestDto;
-import ruslan.shastkiv.bookstore.model.User;
 
 @Sql(
         scripts = {
@@ -87,14 +82,11 @@ public class ShoppingCartControllerTest {
             getShoppingCart()
             - Should return a shopping cart DTO
             """)
-    @WithMockUser(username = "user")
+    @WithUserDetails("user_email_3@mail.com")
     public void getShoppingCart_validUser_returnShoppingCartDto() throws Exception {
-        User user = createUser(USER_ID);
         ShoppingCartDto expectedDto = createShoppingCartDto(USER_ID, List.of(THIRD_BOOK_ID));
-        Authentication authentication = getAuthentication(user);
 
         MvcResult result = mockMvc.perform(get(SHOPPING_CART_URL)
-                        .with(authentication(authentication))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -110,14 +102,12 @@ public class ShoppingCartControllerTest {
             addBook()
             - Should add a book to shopping cart and return a shopping cart DTO
             """)
-    @WithMockUser(username = "user")
+    @WithUserDetails("user_email_3@mail.com")
     @Sql(
             scripts = "classpath:scripts/cart/remove_cart_item_after_create.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     public void addBook_validBook_returnShoppingCartDto() throws Exception {
-        User user = createUser(USER_ID);
-        Authentication authentication = getAuthentication(user);
         CartItemRequestDto cartItemRequestDto = createCartItemRequestDto(SECOND_BOOK_ID);
         String json = objectMapper.writeValueAsString(cartItemRequestDto);
         ShoppingCartDto expectedDto
@@ -125,7 +115,6 @@ public class ShoppingCartControllerTest {
 
         MvcResult result = mockMvc.perform(post(SHOPPING_CART_URL)
                         .content(json)
-                        .with(authentication(authentication))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
@@ -140,7 +129,7 @@ public class ShoppingCartControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user")
+    @WithUserDetails("user_email_3@mail.com")
     @DisplayName("""
             updateQuantity()
             - Should update quantity of books and return updated shopping cart Dto
@@ -150,15 +139,12 @@ public class ShoppingCartControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     public void updateQuantity_existedCartItem_returnUpdatedShoppingCartDto() throws Exception {
-        User user = createUser(USER_ID);
-        Authentication authentication = getAuthentication(user);
         UpdateCartItemRequestDto updateCartItemDro = createUpdateCartItemDto(UPDATED_QUANTITY);
         String json = objectMapper.writeValueAsString(updateCartItemDro);
         ShoppingCartDto expectedDto
                 = createUpdatedShoppingCartDto(USER_ID, ITEM_ID_3, UPDATED_QUANTITY);
 
         MvcResult result = mockMvc.perform(put(ITEM_URL + USER_ID.intValue())
-                        .with(authentication(authentication))
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -175,20 +161,15 @@ public class ShoppingCartControllerTest {
             removeBookFromCart()
             - Should delete book from shopping cart and return no content status
             """)
-    @WithMockUser(username = "user")
+    @WithUserDetails("user_email_3@mail.com")
     @Sql(
             scripts = "classpath:scripts/cart/insert_cart_items.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     public void removeBookFromCart_validCartItemId_returnNoContent() throws Exception {
-        User user = createUser(USER_ID);
-        Authentication authentication = getAuthentication(user);
-
         mockMvc.perform(delete(ITEM_URL + ITEM_ID_FOR_DELETE)
-                        .with(authentication(authentication))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn();
     }
-
 }
