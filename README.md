@@ -104,6 +104,12 @@ online bookstore: from handling products to managing orders and user operations.
 ***
 ## 🛠️ Project Setup & Launch
 
+To install this project, you will need to have on your machine :
+
+![IntelliJ IDEA](https://img.shields.io/badge/-IntelliJ%20IDEA-black?style=for-the-badge&logoColor=white&logo=intellij-idea&color=007ACC)
+![Docker](https://img.shields.io/badge/-Docker-black?style=for-the-badge&logoColor=white&logo=docker&color=004EA2)
+![MySQL](https://img.shields.io/badge/-MySQL-black?style=for-the-badge&logo=mysql&logoColor=white&color=4479A1)
+
 ### 1. Clone the repository:
 You can use any IDE (for example, IntelliJ IDEA) and run the following command in the terminal to clone the project
 
