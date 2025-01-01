@@ -84,7 +84,7 @@ online bookstore: from handling products to managing orders and user operations.
 * **Checkstyle:** Ensures code quality by enforcing a set of coding standards.
 * **Lombok:** Reduces boilerplate code with annotations like @Getter, @Setter, and @ToString.
 * **MapStruct:** Simplifies object mapping between Java beans.
-### Testing
+
 * **JUnit 5:** Framework for writing and running tests.
 * **TestContainers:** Provides lightweight, disposable containers for integration testing.
 * **Spring Security Test:** Tools for testing security aspects in Spring applications.
@@ -99,55 +99,55 @@ online bookstore: from handling products to managing orders and user operations.
 ***
 
 ## 📂 Project Structure
-src
-├── main
-│   ├── java
-│   │   └── ruslan
-│   │       └── shastkiv
-│   │           └── bookstore
-│   │               ├── config
-│   │               ├── controller
-│   │               ├── dto
-│   │               ├── exception
-│   │               ├── mapper
-│   │               ├── model
-│   │               ├── repository
-│   │               ├── security
-│   │               ├── service
-│   │               └── validation
-│   ├── resources
-│   │   ├── application.yml
-│   │   ├── Db.changelog
-│   │   └── changes
-└── test
-├── java
-│   └── ruslan
-│       └── shastkiv
-│           └── bookstore
-│               ├── controller
-│               ├── service
-│               ├── repository
-│               └── utils
-├── resources
-│   └── scripts
-│       ├── book
-│       ├── cart
-│       ├── category
-│       ├── order
-│       └── user
-
+### Entity Relationship Diagram![Screenshot 2025-01-01 173420](https://github.com/user-attachments/assets/a3163523-38e7-47ec-80ad-3f988a1e50fc)
 
 ***
 ## 🛠️ Project Setup & Launch
 
 ### 1. Clone the repository:
 You can use any IDE (for example, IntelliJ IDEA) and run the following command in the terminal to clone the project
-[git clone https://github.com/ShastkivRuslan/online-book-shop.git](https://github.com/ShastkivRuslan/online-book-shop.git)
 
-### 2. Launch the app on your local device or via Docker:
-Create a .env file in the root directory and fill it with your own data, using the provided example from the .env.template file.
+```bash
+git clone https://github.com/ShastkivRuslan/online-book-shop.git
+```
+### 2. Build project
+  Build application using Maven:
+```bash
+mvn clean package
+```
+### 3. Configuration
+  Create a .env file in the root of the project and configure the necessary 
+environment variables, such as the database configuration:
+```
+MYSQLDB_DATABASE=your-db
+MYSQLDB_USER=your-user-name
+MYSQLDB_ROOT_PASSWORD=your-password
+MYSQLDB_LOCAL_PORT=3308
+MYSQLDB_DOCKER_PORT=3306
 
-### 3. Open Swagger UI using your browser to check functionality:
+SPRING_LOCAL_PORT=8088
+SPRING_DOCKER_PORT=8080
+DEBUG_PORT=5005
+```
+### 4. Run the project with Docker
+  Run the project using Docker Compose:
+```bash
+docker-compose up --build
+```
+### 5. Access the application
+  Once the project is running, it will be accessible at:
+```bash
+http://localhost:8088
+```
+  Swagger UI for API testing is available at:
+```bash
+http://localhost:8088/swagger-ui/
+```
+### 6. Stop the application
+   To stop and remove the running Docker containers, use the command:
+```bash
+docker-compose down
+```
 
 ***
 
@@ -162,3 +162,6 @@ Create a .env file in the root directory and fill it with your own data, using t
 
 ***
 ## 📬 Contact us
+- **Email**: shastkiv.ruslan.dev@gmail.com
+- **GitHub**: https://github.com/ShastkivRuslan
+- **LinkedId**: coming soon...
